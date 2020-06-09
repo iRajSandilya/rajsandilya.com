@@ -3,13 +3,12 @@ body{
   margin: 0;
 }
 .middle{
-  position: relative;
+  position: absolute;
   top: 50%;
   transform: translateY(-50%);
   width: 100%;
   text-align: center;
 }
-
 .btn{
   display: inline-block;
   width: 50px;
@@ -18,7 +17,7 @@ body{
   margin: 10px;
   border-radius: 30%;
   box-shadow: 0 5px 15px -5px #00000070;
-  color: #02090e;
+  color: #3498db;
   overflow: hidden;
   position: relative;
 }
@@ -36,7 +35,7 @@ body{
   position: absolute;
   width: 120%;
   height: 120%;
-  background: #3498DB;
+  background: #3498db;
   transform: rotate(45deg);
   left: -110%;
   top: 90%;
@@ -46,18 +45,6 @@ body{
   top: -10%;
   left: -10%;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 @keyframes aaa {
   0%{
     left: -110%;
