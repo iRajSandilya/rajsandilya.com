@@ -17,7 +17,7 @@ body{
   margin: 10px;
   border-radius: 30%;
   box-shadow: 0 5px 15px -5px #00000070;
-  color: #3498db;
+  color: #E1306C;
   overflow: hidden;
   position: relative;
 }
@@ -35,7 +35,7 @@ body{
   position: absolute;
   width: 120%;
   height: 120%;
-  background: #3498db;
+  background: #E1306C;
   transform: rotate(45deg);
   left: -110%;
   top: 90%;
