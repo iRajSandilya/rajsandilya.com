@@ -115,7 +115,7 @@ body{
 }
 .bigbtn i{
   line-height: 50px;
-  font-size: 26px;
+  font-size: 50px;
   transition: 0.2s linear;
 }
 .bigbtn:hover i{
@@ -155,7 +155,7 @@ body{
 }
 .bigibtn i{
   line-height: 50px;
-  font-size: 26px;
+  font-size: 50px;
   transition: 0.2s linear;
 }
 .bigibtn:hover i{
