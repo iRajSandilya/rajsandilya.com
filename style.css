@@ -151,12 +151,13 @@ body{
   box-shadow: 0 5px 15px -5px #00000070;
   color: #02090e;
   overflow: hidden;
-  position: middle;
+  position: relative;
 }
 .bigibtn i{
   line-height: 50px;
-  font-size: 50px;
+  font-size: 50px; 
   transition: 0.2s linear;
+  position: auto;: 
 }
 .bigibtn:hover i{
   transform: scale(1.3);
