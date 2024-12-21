@@ -1,136 +1,101 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Raj Sandilya</title>
-  
-  <!-- Favicon -->
-  <link rel="icon" href="/raj-profile-round.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raj Sandilya</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
 
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        /* Sticky header with shadow */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        /* Home button style */
+        nav a {
+            text-decoration: none;
+            color: #007bff;
+            font-size: 20px;
+            font-weight: 700;
+            margin-right: 30px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+
+        /* Iframe adjustments */
+        iframe {
+            width: 100%;
+            height: calc(100vh - 80px); /* Adjust for sticky header height */
+            border: none;
+        }
+    </style>
 </head>
-
 <body class="min-h-screen bg-white">
 
-  <!-- Header -->
-  <header class="border-b border-gray-100 bg-white/80 backdrop-blur-sm fixed w-full top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 py-4">
-      <div class="flex justify-between items-center">
-        <!-- Small Photo Icon next to the text -->
-        <a href="/" class="flex items-center space-x-2">
-          <img src="/raj-profile-round.png" alt="Raj Sandilya" class="w-8 h-8 rounded-full">
-          <span class="text-2xl font-bold text-gray-900">Raj Sandilya</span>
-        </a>
+    <!-- Header -->
+    <header class="border-b border-gray-100 bg-white/80 backdrop-blur-sm fixed w-full top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Small Photo Icon next to the text -->
+                <a href="/" class="flex items-center space-x-2">
+                    <img src="/raj-profile-round.png" alt="Raj Sandilya" class="w-8 h-8 rounded-full">
+                    <span class="text-2xl font-bold text-gray-900">Raj Sandilya</span>
+                </a>
 
-        <!-- Desktop Navigation -->
-        <nav class="hidden md:flex items-center space-x-8">
-          <a href="/" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
-              <path d="M8 3.293l5 5V13h-3v-4H6v4H3V8.293l5-5z"></path>
-            </svg>
-            <span>Home</span>
-          </a>
-          <a href="/projects" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-code" viewBox="0 0 16 16">
-              <path d="M4.5 5h7a.5.5 0 0 1 .5.5v2h2a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-2v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-2H3a.5.5 0 0 1-.5-.5V7a.5.5 0 0 1 .5-.5h2V5a.5.5 0 0 1 .5-.5z"></path>
-            </svg>
-            <span>Projects</span>
-          </a>
-          <a href="/blogs" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
-              <path d="M1 3v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1zm8 10H2V4h7v9z"></path>
-            </svg>
-            <span>Blogs</span>
-          </a>
-        </nav>
-
-        <!-- Mobile Menu Button -->
-        <button class="md:hidden p-2" onclick="toggleMenu()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-menu-toggle" viewBox="0 0 16 16">
-            <path d="M2 4a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V4zM2 7a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V7zM2 10a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V10z"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile Navigation -->
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
-      <nav class="flex flex-col p-4">
-        <a href="/" class="flex items-center space-x-2 py-3 text-gray-600 hover:text-gray-900 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
-            <path d="M8 3.293l5 5V13h-3v-4H6v4H3V8.293l5-5z"></path>
-          </svg>
-          <span>Home</span>
-        </a>
-        <a href="/projects" class="flex items-center space-x-2 py-3 text-gray-600 hover:text-gray-900 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-code" viewBox="0 0 16 16">
-            <path d="M4.5 5h7a.5.5 0 0 1 .5.5v2h2a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-2v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-2H3a.5.5 0 0 1-.5-.5V7a.5.5 0 0 1 .5-.5h2V5a.5.5 0 0 1 .5-.5z"></path>
-          </svg>
-          <span>Projects</span>
-        </a>
-        <a href="/blogs" class="flex items-center space-x-2 py-3 text-gray-600 hover:text-gray-900 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
-            <path d="M1 3v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1zm8 10H2V4h7v9z"></path>
-          </svg>
-          <span>Blogs</span>
-        </a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <main class="max-w-6xl mx-auto px-4 pt-24 pb-16">
-    <div class="grid md:grid-cols-2 gap-12 items-center">
-      <div class="space-y-6">
-        <div class="space-y-2">
-          <h1 class="text-4xl font-bold text-gray-900">
-            राज शांडिल्य | Raj Sandilya
-          </h1>
-          <p class="text-lg text-gray-600">
-            UG Student &amp; Tech Enthusiast
-          </p>
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
+                            <path d="M8 3.293l5 5V13h-3v-4H6v4H3V8.293l5-5z"></path>
+                        </svg>
+                        <span>Home</span>
+                    </a>
+                    <a href="/projects" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-code" viewBox="0 0 16 16">
+                            <path d="M4.5 5h7a.5.5 0 0 1 .5.5v2h2a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-2v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-2H3a.5.5 0 0 1-.5-.5V7a.5.5 0 0 1 .5-.5h2V5a.5.5 0 0 1 .5-.5z"></path>
+                        </svg>
+                        <span>Projects</span>
+                    </a>
+                    <a href="/blogs" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
+                            <path d="M1 3v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1zm8 10H2V4h7v9z"></path>
+                        </svg>
+                        <span>Blogs</span>
+                    </a>
+                </nav>
+            </div>
         </div>
-        <p class="text-gray-600">
-          Welcome to my digital space! I'm passionate about exploring the intersections of Science, Space, History, and Politics.
-        </p>
+    </header>
 
-        <div class="space-y-4">
-          <h2 class="text-xl font-semibold text-gray-900">About Me</h2>
-          <p class="text-gray-600">
-            I am an undergraduate student at University of Delhi. If you have any questions or comments, please feel free to contact me at mail@rajsandilya.com.
-In the meantime you can read my blogs,  where I write about Science, Space, Business, History, Politics and whatever I like ; )
-          </p>
-        </div>
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 pt-24 pb-16">
+        <!-- Embed the blog page -->
+        <iframe src="https://blogsrajsandilya.wordpress.com/"></iframe>
+    </main>
 
-        
-      </div>
-      <div class="relative">
-        <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100">
-          <img src="/raj-profile-round.png" alt="Raj Sandilya" class="w-full h-full object-cover">
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="border-t border-gray-100 bg-gray-50">
-    <div class="max-w-6xl mx-auto px-4 py-12">
-      <div class="text-center space-y-4">
-        <p class="text-gray-600">South Delhi 110074</p>
-        <p class="text-gray-600">
-          <a href="mailto:mail@rajsandilya.com" class="hover:text-gray-900">mail@rajsandilya.com</a> |
-          <a href="tel:+917982892311" class="hover:text-gray-900">+91 7982892311</a>
-        </p>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    function toggleMenu() {
-      const menu = document.getElementById('mobile-menu');
-      menu.classList.toggle('hidden');
-    }
-  </script>
 </body>
 </html>
