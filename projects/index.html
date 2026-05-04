@@ -1,0 +1,565 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects — Raj Sandilya</title>
+  <link rel="icon" href="/raj-profile-round.png" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --gray-900: #111;
+      --gray-700: #374151;
+      --gray-500: #6b7280;
+      --gray-300: #d1d5db;
+      --gray-100: #f3f4f6;
+      --gray-50: #f9fafb;
+      --white: #ffffff;
+      --accent: #1a1a1a;
+      --tag-bg: #f0f0ee;
+    }
+
+    body {
+      font-family: 'Geist', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER (matches existing site) ── */
+    header {
+      border-bottom: 1px solid #f3f4f6;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-inner {
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .logo img {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+    }
+
+    .logo span {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--black);
+    }
+
+    nav.desktop {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    nav.desktop a {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--gray-500);
+      text-decoration: none;
+      font-size: 14.5px;
+      transition: color 0.2s;
+    }
+
+    nav.desktop a:hover,
+    nav.desktop a.active { color: var(--black); }
+
+    .mobile-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      color: var(--black);
+    }
+
+    #mobile-menu {
+      display: none;
+      background: white;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    #mobile-menu nav {
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+    }
+
+    #mobile-menu a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 0;
+      color: var(--gray-500);
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    /* ── PAGE HERO ── */
+    .page-hero {
+      padding: 120px 16px 64px;
+      max-width: 72rem;
+      margin: 0 auto;
+    }
+
+    .hero-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-label::before {
+      content: '';
+      width: 20px; height: 1px;
+      background: var(--gray-300);
+    }
+
+    .page-hero h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(40px, 6vw, 68px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      margin-bottom: 20px;
+    }
+
+    .page-hero p {
+      font-size: 17px;
+      color: var(--gray-500);
+      max-width: 480px;
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 0 16px 40px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      font-family: 'Geist', sans-serif;
+      font-size: 13px;
+      padding: 7px 16px;
+      border-radius: 100px;
+      border: 1px solid var(--gray-300);
+      background: transparent;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--black);
+      color: var(--black);
+    }
+
+    .filter-btn.active {
+      background: var(--black);
+      border-color: var(--black);
+      color: white;
+    }
+
+    /* ── PROJECT GRID ── */
+    .projects-grid {
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 0 16px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .project-card {
+      display: block;
+      text-decoration: none;
+      border: 1px solid #e8e8e8;
+      border-radius: 14px;
+      overflow: hidden;
+      background: white;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      animation: cardIn 0.5s ease both;
+    }
+
+    .project-card:hover {
+      border-color: var(--black);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+      transform: translateY(-3px);
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .project-card:nth-child(1) { animation-delay: 0.05s; }
+    .project-card:nth-child(2) { animation-delay: 0.1s; }
+    .project-card:nth-child(3) { animation-delay: 0.15s; }
+    .project-card:nth-child(4) { animation-delay: 0.2s; }
+    .project-card:nth-child(5) { animation-delay: 0.25s; }
+    .project-card:nth-child(6) { animation-delay: 0.3s; }
+
+    .card-thumb {
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-thumb .thumb-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.07;
+      background-image: radial-gradient(circle, #000 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .card-thumb .thumb-icon {
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+    }
+
+    .card-body { padding: 24px; }
+
+    .card-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10.5px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      background: var(--tag-bg);
+      color: var(--gray-700);
+      letter-spacing: 0.04em;
+    }
+
+    .card-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px;
+      color: var(--black);
+      margin-bottom: 8px;
+      line-height: 1.25;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: var(--gray-500);
+      line-height: 1.6;
+      font-weight: 300;
+      margin-bottom: 20px;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .card-date {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      color: var(--gray-500);
+      letter-spacing: 0.06em;
+    }
+
+    .card-arrow {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--gray-300);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .project-card:hover .card-arrow {
+      background: var(--black);
+      border-color: var(--black);
+    }
+
+    .project-card:hover .card-arrow svg { stroke: white; }
+
+    .card-arrow svg {
+      width: 14px; height: 14px;
+      stroke: var(--gray-500);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s;
+    }
+
+    .card-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+    }
+
+    .status-dot.live { background: #22c55e; box-shadow: 0 0 0 2px rgba(34,197,94,0.25); }
+    .status-dot.build { background: #f59e0b; }
+    .status-dot.done  { background: var(--gray-300); }
+
+    /* ── HIDDEN class for filter ── */
+    .project-card.hidden { display: none; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--gray-500);
+      font-size: 15px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--gray-100);
+      background: var(--gray-50);
+    }
+
+    footer .footer-inner {
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 48px 16px;
+      text-align: center;
+    }
+
+    footer p { color: var(--gray-500); font-size: 14px; margin-bottom: 4px; }
+    footer a { color: inherit; text-decoration: none; }
+    footer a:hover { color: var(--black); }
+
+    @media (max-width: 768px) {
+      nav.desktop { display: none; }
+      .mobile-btn { display: block; }
+      #mobile-menu { display: block; }
+      .projects-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <img src="/raj-profile-round.png" alt="Raj Sandilya">
+      <span>Raj Sandilya</span>
+    </a>
+
+    <nav class="desktop">
+      <a href="/">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 3.293l5 5V13h-3v-4H6v4H3V8.293l5-5z"/></svg>
+        Home
+      </a>
+      <a href="/projects" class="active">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Projects
+      </a>
+      <a href="/blogs">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M1 3v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1zm8 10H2V4h7v9z"/></svg>
+        Blogs
+      </a>
+    </nav>
+
+    <button class="mobile-btn" onclick="toggleMenu()">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div id="mobile-menu" style="display:none">
+    <nav>
+      <a href="/">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 3.293l5 5V13h-3v-4H6v4H3V8.293l5-5z"/></svg>
+        Home
+      </a>
+      <a href="/projects">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Projects
+      </a>
+      <a href="/blogs">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M1 3v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1zm8 10H2V4h7v9z"/></svg>
+        Blogs
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="hero-label">Portfolio</div>
+  <h1>Things I've<br><em>built.</em></h1>
+  <p>A collection of software projects — from full-stack SaaS platforms to experiments at the edges of what I find interesting.</p>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterCards('all', this)">All</button>
+  <button class="filter-btn" onclick="filterCards('saas', this)">SaaS</button>
+  <button class="filter-btn" onclick="filterCards('web', this)">Web</button>
+  <button class="filter-btn" onclick="filterCards('ai', this)">AI</button>
+  <button class="filter-btn" onclick="filterCards('tool', this)">Tools</button>
+</div>
+
+<!-- PROJECT GRID -->
+<div class="projects-grid" id="projects-grid">
+
+  <!-- ── PROJECT 1: ERP ── -->
+  <a class="project-card" href="/projects/erp" data-tags="saas web ai">
+    <div class="card-thumb" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
+      <div class="thumb-pattern"></div>
+      <span class="thumb-icon">🏗️</span>
+    </div>
+    <div class="card-body">
+      <div class="card-tags">
+        <span class="tag">SaaS</span>
+        <span class="tag">React</span>
+        <span class="tag">Supabase</span>
+        <span class="tag">AI</span>
+      </div>
+      <div class="card-title">Construction ERP</div>
+      <p class="card-desc">Multi-tenant ERP SaaS for construction firms — with RA billing, payroll, inventory tracking, Zoho Books sync, and an AI assistant.</p>
+      <div class="card-footer">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="card-status">
+            <span class="status-dot live"></span> Live
+          </div>
+          <div class="card-date">2024</div>
+        </div>
+        <div class="card-arrow">
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <!-- ── ADD MORE PROJECTS HERE ──
+       Copy the block above and change:
+         - href="/projects/your-slug"
+         - data-tags="saas web ai tool" (space-separated)
+         - card-thumb background gradient + emoji
+         - tag spans
+         - card-title, card-desc
+         - status-dot class: live / build / done
+         - card-date
+  -->
+
+  <!-- Example placeholder card 2 -->
+  <a class="project-card" href="/projects/personal-site" data-tags="web">
+    <div class="card-thumb" style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);">
+      <div class="thumb-pattern"></div>
+      <span class="thumb-icon">🌐</span>
+    </div>
+    <div class="card-body">
+      <div class="card-tags">
+        <span class="tag">Web</span>
+        <span class="tag">HTML/CSS</span>
+      </div>
+      <div class="card-title">Personal Website</div>
+      <p class="card-desc">This very site — a clean personal portfolio and blog built from scratch, hosted at rajsandilya.com.</p>
+      <div class="card-footer">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="card-status">
+            <span class="status-dot live"></span> Live
+          </div>
+          <div class="card-date">2024</div>
+        </div>
+        <div class="card-arrow">
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+    </div>
+  </a>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <p>South Delhi 110074</p>
+    <p><a href="mailto:mail@rajsandilya.com">mail@rajsandilya.com</a> · <a href="tel:+917982892311">+91 7982892311</a></p>
+  </div>
+</footer>
+
+<script>
+  function toggleMenu() {
+    const m = document.getElementById('mobile-menu');
+    m.style.display = m.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function filterCards(tag, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const cards = document.querySelectorAll('.project-card');
+    let visible = 0;
+
+    cards.forEach(card => {
+      const tags = card.dataset.tags || '';
+      if (tag === 'all' || tags.includes(tag)) {
+        card.style.display = 'block';
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    const empty = document.getElementById('empty-state');
+    if (empty) empty.style.display = visible === 0 ? 'block' : 'none';
+  }
+</script>
+
+</body>
+</html>
