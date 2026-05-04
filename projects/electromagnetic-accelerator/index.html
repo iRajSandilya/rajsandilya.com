@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Electromagnetic Accelerator — Raj Sandilya</title>
+  <link rel="icon" href="/raj-profile-round.png" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    :root {
+      --black: #0a0a0a; --gray-900: #111; --gray-700: #374151; --gray-500: #6b7280;
+      --gray-300: #d1d5db; --gray-100: #f3f4f6; --gray-50: #f9fafb; --white: #ffffff;
+      --rule: #e5e7eb;
+    }
+    body { font-family: 'Geist', sans-serif; font-size: 16.5px; line-height: 1.75; color: var(--black); background: var(--white); overflow-x: hidden; }
+
+    /* ── HEADER ── */
+    header { border-bottom: 1px solid var(--gray-100); background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); position: fixed; width: 100%; top: 0; z-index: 50; }
+    .header-inner { max-width: 72rem; margin: 0 auto; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .logo img { width: 32px; height: 32px; border-radius: 50%; }
+    .logo span { font-size: 1.4rem; font-weight: 700; color: var(--black); }
+    nav.desktop { display: flex; align-items: center; gap: 32px; }
+    nav.desktop a { display: flex; align-items: center; gap: 6px; color: var(--gray-500); text-decoration: none; font-size: 14.5px; transition: color 0.2s; }
+    nav.desktop a:hover, nav.desktop a.active { color: var(--black); }
+    .mobile-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: var(--black); }
+    #mobile-menu { display: none; background: white; border-top: 1px solid var(--gray-100); }
+    #mobile-menu.active { display: block; }
+    #mobile-menu nav { display: flex; flex-direction: column; padding: 16px; }
+    #mobile-menu a { display: flex; align-items: center; gap: 8px; padding: 12px 0; color: var(--gray-500); text-decoration: none; font-size: 15px; }
+
+    /* ── MASTHEAD & HERO IMAGE ── */
+    .masthead { padding: 140px 16px 40px; max-width: 72rem; margin: 0 auto; text-align: center; }
+    .site-tag { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 24px; display: inline-flex; align-items: center; gap: 8px; }
+    .masthead h1 { font-family: 'Instrument Serif', serif; font-size: clamp(40px, 6vw, 68px); line-height: 1.05; letter-spacing: -0.02em; color: var(--black); max-width: 800px; margin: 0 auto 24px; }
+    .masthead h1 em { font-style: italic; color: var(--gray-500); }
+    .masthead-sub { font-size: 18px; color: var(--gray-500); max-width: 700px; line-height: 1.6; font-weight: 300; margin: 0 auto 40px; }
+
+    .hero-image-container { max-width: 72rem; margin: 0 auto 64px; padding: 0 16px; }
+    .hero-image-container img { width: 100%; height: auto; aspect-ratio: 21/9; object-fit: cover; border-radius: 16px; border: 1px solid var(--gray-100); background: var(--gray-50); box-shadow: 0 20px 40px rgba(0,0,0,0.04); }
+
+    /* ── TOC & LAYOUT ── */
+    .layout { max-width: 72rem; margin: 0 auto; padding: 0 16px 64px; display: grid; grid-template-columns: 220px 1fr; gap: 64px; align-items: start; }
+    .toc { position: sticky; top: 100px; font-size: 13.5px; }
+    .toc-title { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 16px; }
+    .toc a { display: block; padding: 8px 0 8px 14px; border-left: 1px solid var(--gray-100); color: var(--gray-500); text-decoration: none; transition: all 0.2s; }
+    .toc a:hover, .toc a.active { color: var(--black); border-left-color: var(--black); font-weight: 500; }
+
+    /* ── ARTICLE STYLES ── */
+    .article { min-width: 0; }
+    .article section { margin-bottom: 80px; }
+    .section-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+    .eyebrow-num { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--black); background: var(--gray-50); border: 1px solid var(--gray-100); padding: 4px 10px; border-radius: 4px; }
+    .eyebrow-line { flex: 1; height: 1px; background: var(--rule); }
+    
+    h2 { font-family: 'Instrument Serif', serif; font-size: clamp(32px, 4vw, 42px); line-height: 1.1; color: var(--black); margin-bottom: 24px; }
+    h3 { font-family: 'Geist', sans-serif; font-weight: 600; font-size: 20px; color: var(--black); margin: 48px 0 16px; padding-bottom: 12px; border-bottom: 1px solid var(--gray-100); }
+    
+    p { margin-bottom: 20px; color: var(--gray-700); font-weight: 300; }
+    ul { margin-bottom: 24px; padding-left: 20px; color: var(--gray-700); font-weight: 300; }
+    li { margin-bottom: 10px; }
+    strong { font-weight: 500; color: var(--black); }
+
+    /* ── CALLOUT BOXES ── */
+    .callout { border: 1px solid var(--gray-100); background: var(--gray-50); border-radius: 8px; padding: 24px; margin: 32px 0; font-size: 15px; display: flex; gap: 16px; align-items: flex-start; line-height: 1.6; color: var(--gray-700); }
+    .callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+
+    /* ── FEATURE CARDS ── */
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin: 32px 0; }
+    .feature-card { background: var(--white); border: 1px solid var(--gray-100); border-radius: 12px; padding: 24px; transition: border-color 0.2s; }
+    .feature-card:hover { border-color: var(--black); }
+    .fc-icon { font-size: 24px; margin-bottom: 16px; display: block; }
+    .fc-title { font-weight: 600; font-size: 16px; color: var(--black); margin-bottom: 8px; }
+    .fc-desc { font-size: 14.5px; color: var(--gray-500); line-height: 1.6; margin: 0; }
+
+    /* ── CODE BLOCK WINDOW ── */
+    .code-window { background: #0a0a0a; border-radius: 12px; overflow: hidden; margin: 32px 0; box-shadow: 0 4px 24px rgba(0,0,0,0.08); border: 1px solid #222; }
+    .code-header { background: #141414; padding: 12px 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #2a2a2a; }
+    .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .code-dot.r { background: #ff5f56; }
+    .code-dot.y { background: #ffbd2e; }
+    .code-dot.g { background: #27c93f; }
+    .code-title { color: #888; font-family: 'Geist Mono', monospace; font-size: 12px; margin-left: 8px; letter-spacing: 0.05em; }
+    .code-body { padding: 24px; overflow-x: auto; background: #0a0a0a; }
+    .code-body pre { font-family: 'Geist Mono', monospace; font-size: 13.5px; line-height: 1.6; color: #e5e7eb; margin: 0; tab-size: 2; }
+    .token-comment { color: #6b7280; font-style: italic; }
+    .token-keyword { color: #ff7b72; }
+    .token-type { color: #79c0ff; }
+    .token-num { color: #79c0ff; }
+
+    /* ── CLOSING QUOTE ── */
+    .closing-quote { background: var(--gray-50); border: 1px solid var(--gray-100); border-radius: 16px; padding: 48px; margin: 64px 0 0; text-align: center; }
+    .closing-quote p { font-family: 'Instrument Serif', serif; font-size: clamp(20px, 3vw, 28px); color: var(--black); line-height: 1.4; margin-bottom: 24px; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--gray-100); background: var(--gray-50); text-align: center; padding: 48px 16px; font-size: 14px; margin-top: 80px; }
+    footer a { color: var(--black); text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; gap: 40px; }
+      .toc { position: static; margin-bottom: 24px; }
+      .masthead { padding: 100px 16px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <img src="/raj-profile-round.png" alt="Raj Sandilya">
+      <span>Raj Sandilya</span>
+    </a>
+    <nav class="desktop">
+      <a href="/">Home</a>
+      <a href="/projects" class="active">Projects</a>
+      <a href="/blogs">Blogs</a>
+    </nav>
+    <button class="mobile-btn" onclick="toggleMenu()">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div id="mobile-menu">
+    <nav>
+      <a href="/">Home</a>
+      <a href="/projects">Projects</a>
+      <a href="/blogs">Blogs</a>
+    </nav>
+  </div>
+</header>
+
+<div class="masthead">
+  <div class="site-tag">Hardware & Physics</div>
+  <h1>Electromagnetic <em>Accelerator</em></h1>
+  <p class="masthead-sub">A hardware prototype exploring high-velocity propulsion using multi-stage electromagnetic coils, offering a sustainable alternative for future space exploration.</p>
+</div>
+
+<!-- ==========================================
+     HERO IMAGE: ADD YOUR ORIGINAL PROJECT PICTURE HERE 
+     ========================================== -->
+<div class="hero-image-container">
+  <!-- Replace the src below with the actual photo of your hardware setup -->
+  <img src="/accelerator.png" alt="Electromagnetic Accelerator Prototype Hardware">
+</div>
+
+<div class="layout">
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <a href="#abstract">01 — Abstract</a>
+    <a href="#hardware">02 — Hardware Architecture</a>
+    <a href="#mechanism">03 — Working Mechanism</a>
+    <a href="#code">04 — Control Logic</a>
+    <a href="#applications">05 — Future Applications</a>
+  </aside>
+
+  <article class="article">
+    <section id="abstract">
+      <div class="section-eyebrow"><span class="eyebrow-num">01</span><span class="eyebrow-line"></span></div>
+      <h2>Abstract</h2>
+      <p>The future exploration of space by humans heavily relies on the development of highly efficient launch options that can utilize in-situ energy. Most conventional propulsion systems are bottlenecked by chemical reactions. This creates a severe limitation in deep space or alien environments where chemical fuels are scarce. Furthermore, while nuclear fuels offer massive energy density, they cannot easily be used directly in traditional exhaust-based propulsion systems.</p>
+      
+      <p>Electromagnetic accelerators provide a groundbreaking alternative. By utilizing pure electromagnetic forces for propulsion, they provide a massive advantage in resource-limited environments. In these scenarios, electricity can be generated steadily using nuclear or solar energy, which is then used directly to power propulsion systems like electromagnetic mass drivers.</p>
+
+      <div class="callout">
+        <span class="callout-icon">👥</span>
+        <div>This hardware prototype was engineered and developed by a dedicated project team: <strong>Raj Sandilya (Raja Kumar)</strong>, <strong>Sparsh Lohani</strong>, and <strong>Mohit Chobey</strong> at the Department of Physics, Dyal Singh College, University of Delhi.</div>
+      </div>
+    </section>
+
+    <section id="hardware">
+      <div class="section-eyebrow"><span class="eyebrow-num">02</span><span class="eyebrow-line"></span></div>
+      <h2>Hardware Architecture</h2>
+      <p>The successful acceleration of a physical payload requires precise orchestration between high-voltage power delivery and microsecond-accurate digital switching. The hardware stack consists of:</p>
+      
+      <ul>
+        <li><strong>Copper Coils:</strong> Carefully arranged in a linear, multi-stage sequence. These coils generate the intense, localized magnetic fields responsible for accelerating the payload forward.</li>
+        <li><strong>Hall Effect Sensors:</strong> Positioned strategically at each stage to detect the precise physical presence and magnetic signature of the payload as it travels through the accelerator.</li>
+        <li><strong>Arduino Microcontrollers:</strong> The brain of the operation. These microcontrollers are programmed to read the real-time telemetry from the Hall sensors and fire "High" or "Low" signals to the switching array.</li>
+        <li><strong>IRF520 MOSFET Array:</strong> Solid-state switches responsible for instantly turning the high-voltage coils on and off based on the Arduino's logic. The IRF520 module was specifically selected because it boasts a breakthrough voltage of 100V, ensuring stable operation without hardware failure under heavy load.</li>
+        <li><strong>Dual Power Sources:</strong> A standard 5V DC power source is used to safely run the delicate digital control logic (Arduinos and sensors), completely isolated from a high-voltage 50V-70V DC power line used exclusively to energize the propulsion coils. This high voltage was achieved by bridging two separate 30-35V DC power sources in series.</li>
+      </ul>
+    </section>
+
+    <section id="mechanism">
+      <div class="section-eyebrow"><span class="eyebrow-num">03</span><span class="eyebrow-line"></span></div>
+      <h2>Working Mechanism</h2>
+      <p>The core innovation of this project lies in the construction of a <strong>multi-stage coil accelerator</strong>, where every individual coil is dynamically governed by the Arduino and MOSFET controller.</p>
+      
+      <p>Rather than firing all coils at once, the accelerator energizes the payload strictly sequentially. As the payload is pulled toward the first coil, its arrival is instantly detected by the local Hall effect sensor. This triggers an immediate digital interrupt: the microcontroller deactivates the current coil to prevent the payload from getting stuck in magnetic equilibrium, while simultaneously activating the next coil down the line. This rapid, cascading sequence pulls the payload faster and faster, building significant high-velocity momentum.</p>
+    </section>
+
+    <section id="code">
+      <div class="section-eyebrow"><span class="eyebrow-num">04</span><span class="eyebrow-line"></span></div>
+      <h2>Control Logic (Arduino)</h2>
+      <p>The acceleration sequence is orchestrated by a central Arduino. The logic utilizes hardware interrupts (simulated via rapid polling) to track the payload across six dedicated Hall effect sensors. To prevent coil burnout under high voltage, a strict <code>stopTime</code> safety threshold automatically kills power to all coils after 2000 milliseconds.</p>
+
+      <div class="code-window">
+        <div class="code-header">
+          <div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div>
+          <div class="code-title">accelerator_sequence.ino</div>
+        </div>
+        <div class="code-body">
+<pre><code><span class="token-comment">// Pin Definitions</span>
+<span class="token-keyword">const</span> <span class="token-type">int</span> COIL1_PIN = <span class="token-num">2</span>;
+<span class="token-keyword">const</span> <span class="token-type">int</span> COIL2_PIN = <span class="token-num">4</span>;
+<span class="token-keyword">const</span> <span class="token-type">int</span> COIL3_PIN = <span class="token-num">6</span>;
+<span class="token-keyword">const</span> <span class="token-type">int</span> COIL4_PIN = <span class="token-num">8</span>;
+<span class="token-keyword">const</span> <span class="token-type">int</span> COIL5_PIN = <span class="token-num">10</span>;
+<span class="token-keyword">const</span> <span class="token-type">int</span> COIL6_PIN = <span class="token-num">11</span>;
+
+<span class="token-keyword">const</span> <span class="token-type">int</span> SENSOR1_PIN = <span class="token-num">1</span>;
+<span class="token-keyword">const</span> <span class="token-type">int</span> SENSOR2_PIN = <span class="token-num">3</span>;
+<span class="token-keyword">const</span> <span class="token-type">int</span> SENSOR3_PIN = <span class="token-num">5</span>;
+<span class="token-keyword">const</span> <span class="token-type">int</span> SENSOR4_PIN = <span class="token-num">7</span>;
+<span class="token-keyword">const</span> <span class="token-type">int</span> SENSOR5_PIN = <span class="token-num">9</span>;
+<span class="token-keyword">const</span> <span class="token-type">int</span> SENSOR6_PIN = <span class="token-num">11</span>;
+
+<span class="token-comment">// Variables for Sensor Readings</span>
+<span class="token-type">int</span> sensor1State;
+<span class="token-type">int</span> sensor2State;
+<span class="token-type">int</span> sensor3State;
+<span class="token-type">int</span> sensor4State;
+<span class="token-type">int</span> sensor5State;
+<span class="token-type">int</span> sensor6State;
+
+<span class="token-comment">// Time Variables</span>
+<span class="token-type">unsigned long</span> startTime;
+<span class="token-type">unsigned long</span> elapsedTime;
+<span class="token-keyword">const</span> <span class="token-type">unsigned long</span> stopTime = <span class="token-num">2000</span>;
+
+<span class="token-keyword">void</span> setup() {
+  <span class="token-comment">// Set Coil Pins as Outputs</span>
+  pinMode(COIL1_PIN, OUTPUT);
+  pinMode(COIL2_PIN, OUTPUT);
+  pinMode(COIL3_PIN, OUTPUT);
+  pinMode(COIL4_PIN, OUTPUT);
+  pinMode(COIL5_PIN, OUTPUT);
+  pinMode(COIL6_PIN, OUTPUT);
+
+  <span class="token-comment">// Initialize Coil States (Fire first coil to pull payload)</span>
+  digitalWrite(COIL1_PIN, HIGH);
+  digitalWrite(COIL2_PIN, LOW);
+  digitalWrite(COIL3_PIN, LOW);
+  digitalWrite(COIL4_PIN, LOW);
+  digitalWrite(COIL5_PIN, LOW);
+  digitalWrite(COIL6_PIN, LOW);
+
+  <span class="token-comment">// Record Start Time</span>
+  startTime = millis();
+}
+
+<span class="token-keyword">void</span> loop() {
+  <span class="token-comment">// Update Elapsed Time</span>
+  <span class="token-type">unsigned long</span> currentTime = millis();
+  elapsedTime = currentTime - startTime;
+
+  <span class="token-comment">// Safety Check: Turn off coils if program runs past 2 seconds</span>
+  <span class="token-keyword">if</span> (elapsedTime > stopTime) {
+    digitalWrite(COIL1_PIN, LOW);
+    digitalWrite(COIL2_PIN, LOW);
+    digitalWrite(COIL3_PIN, LOW);
+    digitalWrite(COIL4_PIN, LOW);
+    digitalWrite(COIL5_PIN, LOW);
+    digitalWrite(COIL6_PIN, LOW);
+  } <span class="token-keyword">else</span> {
+    <span class="token-comment">// Read Sensor States</span>
+    sensor1State = digitalRead(SENSOR1_PIN);
+    sensor2State = digitalRead(SENSOR2_PIN);
+    sensor3State = digitalRead(SENSOR3_PIN);
+    sensor4State = digitalRead(SENSOR4_PIN);
+    sensor5State = digitalRead(SENSOR5_PIN);
+    sensor6State = digitalRead(SENSOR6_PIN);
+
+    <span class="token-comment">// Cascade Coils based on Sensor Triggers</span>
+    <span class="token-keyword">if</span> (sensor1State == LOW) {
+      digitalWrite(COIL1_PIN, LOW);
+      digitalWrite(COIL2_PIN, HIGH);
+    }
+    <span class="token-keyword">if</span> (sensor2State == LOW) {
+      digitalWrite(COIL2_PIN, LOW);
+      digitalWrite(COIL3_PIN, HIGH);
+    }
+    <span class="token-keyword">if</span> (sensor3State == LOW) {
+      digitalWrite(COIL3_PIN, LOW);
+      digitalWrite(COIL4_PIN, HIGH);
+    }
+    <span class="token-keyword">if</span> (sensor4State == LOW) {
+      digitalWrite(COIL4_PIN, LOW);
+      digitalWrite(COIL5_PIN, HIGH);
+    }
+    <span class="token-keyword">if</span> (sensor5State == LOW) {
+      digitalWrite(COIL5_PIN, LOW);
+      digitalWrite(COIL6_PIN, HIGH);
+    }
+    <span class="token-keyword">if</span> (sensor6State == LOW) {
+      digitalWrite(COIL6_PIN, LOW);
+    }
+  }
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="applications">
+      <div class="section-eyebrow"><span class="eyebrow-num">05</span><span class="eyebrow-line"></span></div>
+      <h2>Future Applications</h2>
+      <p>This prototype successfully demonstrates the foundational physics and control logic required for electromagnetic propulsion, proving its adaptability for future transport solutions.</p>
+      
+      <div class="feature-grid">
+        <div class="feature-card">
+          <span class="fc-icon">🚀</span>
+          <div class="fc-title">Space Launch Systems</div>
+          <p class="fc-desc">Electromagnetic catapults could be engineered for low-gravity environments (like the Moon or asteroids) to launch miniature satellites or payload containers without using a drop of chemical fuel, unlocking the economic viability of asteroid mining ventures.</p>
+        </div>
+        <div class="feature-card">
+          <span class="fc-icon">🏭</span>
+          <div class="fc-title">Industrial Transport</div>
+          <p class="fc-desc">The underlying technology holds immense promise for terrestrial industrial applications. High-speed, frictionless material transport systems could deliver massive efficiency gains and cost savings in manufacturing logistics.</p>
+        </div>
+        <div class="feature-card">
+          <span class="fc-icon">🎯</span>
+          <div class="fc-title">Defense & Military</div>
+          <p class="fc-desc">Scaling up this technology paves the way for electromagnetic railguns. These systems offer hyper-velocity projectile capabilities, providing advanced solutions for long-range precision strikes and missile defense.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="closing-quote">
+      <p>By showcasing the construction and operation of a multi-stage coil accelerator controlled by Arduino boards and MOSFET switches, we highlight the adaptability and sustainability of electromagnetic propulsion for future space exploration.</p>
+    </div>
+  </article>
+</div>
+
+<footer>
+  <p>Built with precision. Live at <a href="https://physics.rajsandilya.com" target="_blank">physics.rajsandilya.com</a></p>
+</footer>
+
+<script>
+  function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('active'); }
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.toc a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const match = document.querySelector(`.toc a[href="#${entry.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
