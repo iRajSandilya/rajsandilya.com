@@ -150,8 +150,8 @@
 <div class="layout">
   <aside class="toc">
     <p class="toc-title">Contents</p>
-    <a href="#abstract" class="">01 — Abstract</a>
-    <a href="#hardware" class="active">02 — Hardware Architecture</a>
+    <a href="#abstract" class="active">01 — Abstract</a>
+    <a href="#hardware" class="">02 — Hardware Architecture</a>
     <a href="#mechanism" class="">03 — Working Mechanism</a>
     <a href="#code" class="">04 — Control Logic</a>
     <a href="#applications" class="">05 — Future Applications</a>
@@ -187,6 +187,10 @@
       <h2>Working Mechanism</h2>
       <p>The core innovation of this project lies in the construction of a <strong>multi-stage coil accelerator</strong>, where every individual coil is dynamically governed by the Arduino and MOSFET controller.</p>
       
+      <div class="mechanism-diagram">
+        <img src="https://www.rajsandilya.com/projects/electromagnetic-accelerator/diagram.png" alt="Multi-stage electromagnetic acceleration stages" style="width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--gray-100); margin: 24px 0; box-shadow: 0 20px 40px rgba(0,0,0,0.04);">
+      </div>
+
       <p>Rather than firing all coils at once, the accelerator energizes the payload strictly sequentially. As the payload is pulled toward the first coil, its arrival is instantly detected by the local Hall effect sensor. This triggers an immediate digital interrupt: the microcontroller deactivates the current coil to prevent the payload from getting stuck in magnetic equilibrium, while simultaneously activating the next coil down the line. This rapid, cascading sequence pulls the payload faster and faster, building significant high-velocity momentum.</p>
     </section>
 
@@ -353,4 +357,5 @@
 </script>
 
 
-<iframe frameborder="0" scrolling="no" style="background-color: transparent; border: 0px; display: none;"></iframe><div id="GOOGLE_INPUT_CHEXT_FLAG" style="display: none;" input="" input_stat="{&quot;tlang&quot;:true,&quot;tsbc&quot;:true,&quot;pun&quot;:true,&quot;mk&quot;:true,&quot;ss&quot;:true}"></div></body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>
+<iframe frameborder="0" scrolling="no" style="background-color: transparent; border: 0px; display: none;"></iframe><div id="GOOGLE_INPUT_CHEXT_FLAG" style="display: none;" input="" input_stat="{&quot;tlang&quot;:true,&quot;tsbc&quot;:true,&quot;pun&quot;:true,&quot;mk&quot;:true,&quot;ss&quot;:true}"></div><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration>
+<iframe frameborder="0" scrolling="no" style="background-color: transparent; border: 0px; display: none;"></iframe></body></html>
