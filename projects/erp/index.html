@@ -39,7 +39,8 @@
     .masthead-sub { font-size: 18px; color: var(--gray-500); max-width: 700px; line-height: 1.6; font-weight: 300; margin: 0 auto 40px; }
 
     .hero-image-container { max-width: 72rem; margin: 0 auto 64px; padding: 0 16px; }
-    .hero-image-container img { width: 100%; height: auto; aspect-ratio: 21/9; object-fit: cover; border-radius: 16px; border: 1px solid var(--gray-100); background: var(--gray-50); box-shadow: 0 20px 40px rgba(0,0,0,0.04); }
+    /* FIXED IMAGE CSS: Removed crop and fixed aspect ratio so the UI fits perfectly */
+    .hero-image-container img { width: 100%; height: auto; display: block; border-radius: 16px; border: 1px solid var(--gray-100); background: var(--gray-50); box-shadow: 0 20px 40px rgba(0,0,0,0.04); }
 
     /* ── STATS BAR ── */
     .stats-bar { border-bottom: 1px solid var(--rule); border-top: 1px solid var(--rule); background: var(--gray-50); margin-bottom: 64px; }
@@ -165,10 +166,8 @@
      ========================================== -->
 <div class="hero-image-container">
   <!-- Insert original picture of the project here -->
-  <img src="/erpview.png" alt="ERP Dashboard UI">
+  <img src="https://www.rajsandilya.com/projects/erp/erpview.png" alt="ERP Dashboard UI">
 </div>
-
-
 
 <div class="layout">
   <aside class="toc">
@@ -463,5 +462,5 @@
   }, { rootMargin: '-20% 0px -70% 0px' });
   sections.forEach(s => observer.observe(s));
 </script>
-
-</body></html>
+</body>
+</html>
