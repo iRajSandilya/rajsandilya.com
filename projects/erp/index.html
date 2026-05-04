@@ -1,0 +1,467 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inside a Modern Construction ERP — Raj Sandilya</title>
+  <link rel="icon" href="/raj-profile-round.png" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@300;400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    :root {
+      --black: #0a0a0a; --gray-900: #111; --gray-700: #374151; --gray-500: #6b7280;
+      --gray-300: #d1d5db; --gray-100: #f3f4f6; --gray-50: #f9fafb; --white: #ffffff;
+      --rule: #e5e7eb; --tag-bg: #f0f0ee;
+    }
+    body { font-family: 'Geist', sans-serif; font-size: 16px; line-height: 1.75; color: var(--black); background: var(--white); overflow-x: hidden; }
+
+    /* ── HEADER ── */
+    header { border-bottom: 1px solid var(--gray-100); background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); position: fixed; width: 100%; top: 0; z-index: 50; }
+    .header-inner { max-width: 72rem; margin: 0 auto; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .logo img { width: 32px; height: 32px; border-radius: 50%; }
+    .logo span { font-size: 1.4rem; font-weight: 700; color: var(--black); }
+    nav.desktop { display: flex; align-items: center; gap: 32px; }
+    nav.desktop a { display: flex; align-items: center; gap: 6px; color: var(--gray-500); text-decoration: none; font-size: 14.5px; transition: color 0.2s; }
+    nav.desktop a:hover, nav.desktop a.active { color: var(--black); }
+    .mobile-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: var(--black); }
+    #mobile-menu { display: none; background: white; border-top: 1px solid var(--gray-100); }
+    #mobile-menu.active { display: block; }
+    #mobile-menu nav { display: flex; flex-direction: column; padding: 16px; }
+    #mobile-menu a { display: flex; align-items: center; gap: 8px; padding: 12px 0; color: var(--gray-500); text-decoration: none; font-size: 15px; }
+
+    /* ── MASTHEAD & HERO IMAGE ── */
+    .masthead { padding: 140px 16px 40px; max-width: 72rem; margin: 0 auto; text-align: center; }
+    .site-tag { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 24px; display: inline-flex; align-items: center; gap: 8px; }
+    .masthead h1 { font-family: 'Instrument Serif', serif; font-size: clamp(40px, 6vw, 68px); line-height: 1.05; letter-spacing: -0.02em; color: var(--black); max-width: 800px; margin: 0 auto 24px; }
+    .masthead h1 em { font-style: italic; color: var(--gray-500); }
+    .masthead-sub { font-size: 18px; color: var(--gray-500); max-width: 700px; line-height: 1.6; font-weight: 300; margin: 0 auto 40px; }
+
+    .hero-image-container { max-width: 72rem; margin: 0 auto 64px; padding: 0 16px; }
+    .hero-image-container img { width: 100%; height: auto; aspect-ratio: 21/9; object-fit: cover; border-radius: 16px; border: 1px solid var(--gray-100); background: var(--gray-50); box-shadow: 0 20px 40px rgba(0,0,0,0.04); }
+
+    /* ── STATS BAR ── */
+    .stats-bar { border-bottom: 1px solid var(--rule); border-top: 1px solid var(--rule); background: var(--gray-50); margin-bottom: 64px; }
+    .stats-inner { max-width: 72rem; margin: 0 auto; padding: 0 16px; display: grid; grid-template-columns: repeat(4, 1fr); }
+    .stat-item { padding: 32px 0; border-right: 1px solid var(--rule); text-align: center; }
+    .stat-item:last-child { border-right: none; }
+    .stat-num { font-family: 'Instrument Serif', serif; font-size: 36px; line-height: 1; margin-bottom: 8px; display: block; color: var(--black); }
+    .stat-label { font-size: 11px; font-family: 'Geist Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-500); }
+
+    /* ── TOC & LAYOUT ── */
+    .layout { max-width: 72rem; margin: 0 auto; padding: 0 16px 64px; display: grid; grid-template-columns: 220px 1fr; gap: 64px; align-items: start; }
+    .toc { position: sticky; top: 100px; font-size: 13.5px; }
+    .toc-title { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 16px; }
+    .toc a { display: block; padding: 8px 0 8px 14px; border-left: 1px solid var(--gray-100); color: var(--gray-500); text-decoration: none; transition: all 0.2s; }
+    .toc a:hover, .toc a.active { color: var(--black); border-left-color: var(--black); font-weight: 500; }
+
+    /* ── ARTICLE STYLES ── */
+    .article { min-width: 0; }
+    .article section { margin-bottom: 80px; }
+    .section-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+    .eyebrow-num { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--black); background: var(--gray-50); border: 1px solid var(--gray-100); padding: 4px 10px; border-radius: 4px; }
+    .eyebrow-line { flex: 1; height: 1px; background: var(--rule); }
+    
+    h2 { font-family: 'Instrument Serif', serif; font-size: clamp(32px, 4vw, 42px); line-height: 1.1; color: var(--black); margin-bottom: 24px; }
+    h3 { font-family: 'Geist', sans-serif; font-weight: 600; font-size: 20px; color: var(--black); margin: 48px 0 16px; padding-bottom: 12px; border-bottom: 1px solid var(--gray-100); }
+    h4 { font-family: 'Geist', sans-serif; font-weight: 600; font-size: 16px; color: var(--black); margin: 24px 0 8px; }
+    
+    p { margin-bottom: 20px; color: var(--gray-700); font-weight: 300; }
+    ul { margin-bottom: 24px; padding-left: 20px; color: var(--gray-700); font-weight: 300; }
+    li { margin-bottom: 10px; }
+    li strong { font-weight: 500; color: var(--black); }
+    strong { font-weight: 500; color: var(--black); }
+    code { font-family: 'Geist Mono', monospace; font-size: 13px; background: var(--gray-50); border: 1px solid var(--gray-100); padding: 2px 6px; border-radius: 4px; color: var(--black); }
+
+    /* ── CALLOUT BOXES ── */
+    .callout { border: 1px solid var(--gray-100); background: var(--gray-50); border-radius: 8px; padding: 24px; margin: 32px 0; font-size: 15px; display: flex; gap: 16px; align-items: flex-start; line-height: 1.6; color: var(--gray-700); }
+    .callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+
+    /* ── FLOW DIAGRAM ── */
+    .flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin: 32px 0; background: var(--gray-50); border: 1px solid var(--gray-100); border-radius: 12px; padding: 32px; overflow-x: auto; }
+    .flow-step { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 100px; }
+    .flow-dot { width: 48px; height: 48px; border-radius: 50%; background: var(--white); border: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .flow-label { font-size: 12px; color: var(--black); font-weight: 500; letter-spacing: 0.05em; }
+    .flow-arrow { color: var(--gray-300); font-size: 20px; padding: 0 12px; margin-bottom: 24px; flex-shrink: 0; }
+
+    /* ── FEATURE CARDS / GRIDS ── */
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin: 24px 0; }
+    .feature-card { background: var(--white); border: 1px solid var(--gray-100); border-radius: 12px; padding: 24px; transition: border-color 0.2s; }
+    .feature-card:hover { border-color: var(--black); }
+    .fc-title { font-weight: 600; font-size: 16px; color: var(--black); margin-bottom: 8px; }
+    .fc-desc { font-size: 14.5px; color: var(--gray-500); line-height: 1.6; margin: 0; }
+
+    /* ── TABLES ── */
+    .table-wrap { overflow-x: auto; margin: 32px 0; border: 1px solid var(--gray-100); border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14.5px; text-align: left; }
+    thead { background: var(--gray-50); border-bottom: 1px solid var(--gray-100); }
+    th { padding: 16px; font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gray-500); }
+    td { padding: 16px; border-bottom: 1px solid var(--gray-50); color: var(--gray-700); vertical-align: middle; line-height: 1.6; }
+    tbody tr:last-child td { border-bottom: none; }
+    
+    .badge { display: inline-block; font-size: 11px; padding: 2px 10px; border-radius: 100px; font-weight: 500; border: 1px solid var(--gray-100); background: var(--gray-50); color: var(--gray-700); }
+    .badge-admin { background: var(--black); color: var(--white); border-color: var(--black); }
+    .badge-super { background: #e0e7ff; color: #3730a3; border-color: #c7d2fe; }
+
+    /* ── CLOSING QUOTE ── */
+    .closing-quote { background: var(--gray-50); border: 1px solid var(--gray-100); border-radius: 16px; padding: 48px; margin: 64px 0 0; text-align: center; }
+    .closing-quote p { font-family: 'Instrument Serif', serif; font-size: clamp(20px, 3vw, 28px); color: var(--black); line-height: 1.4; margin-bottom: 24px; }
+    .closing-quote-attr { font-size: 12px; color: var(--gray-500); letter-spacing: 0.08em; font-family: 'Geist Mono', monospace; text-transform: uppercase; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--gray-100); background: var(--gray-50); text-align: center; padding: 48px 16px; font-size: 14px; margin-top: 80px; }
+    footer a { color: var(--black); text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; gap: 40px; }
+      .toc { position: static; margin-bottom: 24px; }
+      .masthead { padding: 100px 16px 24px; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .stats-inner { grid-template-columns: 1fr 1fr; }
+      .flow { flex-direction: column; gap: 8px; }
+      .flow-arrow { transform: rotate(90deg); margin: 0; padding: 12px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <img src="/raj-profile-round.png" alt="Raj Sandilya">
+      <span>Raj Sandilya</span>
+    </a>
+    <nav class="desktop">
+      <a href="/">Home</a>
+      <a href="/projects" class="active">Projects</a>
+      <a href="/blogs">Blogs</a>
+    </nav>
+    <button class="mobile-btn" onclick="toggleMenu()">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+  <div id="mobile-menu">
+    <nav>
+      <a href="/">Home</a>
+      <a href="/projects">Projects</a>
+      <a href="/blogs">Blogs</a>
+    </nav>
+  </div>
+</header>
+
+<div class="masthead">
+  <div class="site-tag">erp.rajsandilya.com</div>
+  <h1>A <em>Modern, Medium Scale -</em> Multi-Tenant Construction ERP</h1>
+  <p class="masthead-sub">An exhaustive breakdown of a production-grade SaaS platform built for construction, contracting, and project-based businesses — covering every module, deep workflow, and operational decision.</p>
+</div>
+
+<!-- ==========================================
+     HERO IMAGE
+     ========================================== -->
+<div class="hero-image-container">
+  <!-- Insert original picture of the project here -->
+  <img src="https://via.placeholder.com/1200x500.png?text=Add+Original+Picture+of+the+Project+Here" alt="ERP Dashboard UI">
+</div>
+
+
+
+<div class="layout">
+  <aside class="toc">
+    <p class="toc-title">Contents</p>
+    <a href="#org-model">01 — Organization Model</a>
+    <a href="#module-catalog">02 — Module Catalogue</a>
+    <a href="#deep-dives">03 — Feature Deep Dives</a>
+    <a href="#integrations">04 — Integrations</a>
+    <a href="#ui-ux">05 — UI, UX &amp; Realtime</a>
+    <a href="#operations">06 — Operations</a>
+    <a href="#glossary">07 — Glossary</a>
+  </aside>
+
+  <article class="article">
+
+    <!-- 01 Organization Model -->
+    <section id="org-model">
+      <div class="section-eyebrow"><span class="eyebrow-num">01</span><span class="eyebrow-line"></span></div>
+      <h2>Organization &amp; Company Model</h2>
+      <p>A <strong>tenant organisation</strong> can act as an umbrella containing <strong>multiple legal companies</strong> (such as a holding group, sister concerns, or entities with separate GSTINs).</p>
+      
+      <ul>
+        <li>Each company has its own GSTIN, address, bank details, signature, and official seal.</li>
+        <li>Each company can independently connect to Zoho Books with its own exclusive OAuth grant.</li>
+        <li>All sales documents (quotations, invoices, RA bills, credit notes) are issued <em>on behalf of a chosen company</em>. The system automatically merges the selected company's bank metadata, signature, and seal into the rendered PDFs.</li>
+        <li><strong>Billing Company Lock:</strong> Customer records are permanently locked to a billing company once the first approved document is issued, preventing accidental cross-entity invoicing.</li>
+        <li>Per-tenant branding (logo, accent colour, brand mark) is isolated, while the Superadmin separately controls the platform-level brand that appears on global auth screens.</li>
+      </ul>
+    </section>
+
+    <!-- 02 Module Catalogue -->
+    <section id="module-catalog">
+      <div class="section-eyebrow"><span class="eyebrow-num">02</span><span class="eyebrow-line"></span></div>
+      <h2>Module Catalogue</h2>
+      <p>The ERP Home (<code>/</code>) presents a card grid of modules. A <strong>Quick Create</strong> strip on the home screen exposes a configurable 4×1 grid of one-tap entry points (e.g. <em>New Invoice, New Project, New PO, New Advance</em>) — filtered automatically by the modules the current user is permitted to access.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Module</th><th>Route</th><th>Gated By</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Sales</strong></td><td><code>/sales</code></td><td><span class="badge">enabled_modules</span></td></tr>
+            <tr><td><strong>Project Management</strong></td><td><code>/projects</code></td><td><span class="badge">enabled_modules</span></td></tr>
+            <tr><td><strong>Purchase</strong></td><td><code>/purchase</code></td><td><span class="badge">enabled_modules</span></td></tr>
+            <tr><td><strong>Workspace</strong></td><td><code>/workspace</code></td><td><span class="badge">enabled_modules</span></td></tr>
+            <tr><td><strong>Human Resource</strong></td><td><code>/hrm</code></td><td><span class="badge">enabled_modules</span></td></tr>
+            <tr><td><strong>Equipment &amp; Inventory</strong></td><td><code>/inventory</code></td><td><span class="badge">enabled_modules</span></td></tr>
+            <tr><td><strong>Analytics</strong></td><td><code>/analytics</code></td><td><span class="badge badge-admin">admin role + module</span></td></tr>
+            <tr><td><strong>Finance &amp; Accounting</strong></td><td>external</td><td><span class="badge badge-admin">admin role + module</span></td></tr>
+            <tr><td><strong>Administrator</strong></td><td><code>/admin</code></td><td><span class="badge badge-admin">admin role</span></td></tr>
+            <tr><td><strong>SuperAdmin</strong></td><td><code>/superadmin</code></td><td><span class="badge badge-super">superadmin only</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Detailed Capabilities by Module</h3>
+
+      <h4>5.1 Sales Module</h4>
+      <p><strong>Pages:</strong> Dashboard, Customers, Quotations, Invoices, Credit Notes, Proforma, RA Bills (project view), Project Dashboard, All Invoices.</p>
+      <ul>
+        <li><strong>Customer master:</strong> Separation of Trade Name (legal) vs <code>display_name</code> (unique nickname), billing/shipping address mapping, GSTIN, default-type sync, and optional manual Zoho contact ID bypass for legacy migration.</li>
+        <li><strong>Quotations:</strong> General vs Special Terms &amp; Conditions, default unit logic, configurable signature blocks, and polished PDF exports.</li>
+        <li><strong>Direct Invoices:</strong> Pre-filled default T&amp;C, calculated due dates from payment terms, sequential numbering, and dual-mode PDFs (Detailed line-items vs Summary).</li>
+        <li><strong>Shadow item compliance:</strong> Non-billable line items can be carried for record-keeping without distorting real tax totals.</li>
+        <li><strong>Negative-quantity blocking:</strong> Hard blocks at the form level prevent accidental refund-shaped invoices.</li>
+        <li><strong>Credit Notes:</strong> Automatic IGST vs CGST routing based on place-of-supply, fully linked to the source invoice and mapped to the matching Zoho credit note.</li>
+        <li><strong>Proforma Invoices:</strong> Separate numbering series with a clear "not-for-tax" stamp.</li>
+      </ul>
+
+      <h4>5.2 Project Management Module</h4>
+      <p><strong>Pages:</strong> Projects, Project Detail, Master Items, RA Bills, RA Bill Edit, RA Bill View.</p>
+      <ul>
+        <li>A unique <code>project_id</code> consistent across Inventory (locations, transfers), HRM (attendance, payroll), and Sales (RA bills).</li>
+        <li>An auto-generated <strong>location entity</strong> so that the project's site address acts as a real inventory location for material transfers.</li>
+        <li>A <strong>Master Items</strong> list with per-item HSN and GST mappings inherited from the global item master.</li>
+        <li>A <strong>Financial Summary</strong> showing total contracted value, total billed, holds outstanding, and net balance.</li>
+      </ul>
+
+      <h4>5.3 Purchase Module</h4>
+      <p><strong>Pages:</strong> Dashboard, Vendors, Orders, Transactions, Credit Notes.</p>
+      <ul>
+        <li><strong>Vendor master:</strong> GSTIN, payment terms, bank details, and Zoho vendor mapping.</li>
+        <li><strong>Purchase Orders:</strong> Drag-drop item selection, automatic billing company resolution, and signature-bearing PDFs.</li>
+        <li><strong>Purchase Transactions:</strong> Vendor invoice number priority (the vendor's invoice # takes precedence over the internal reference for matching), and per-line tax-rate overrides for special cases.</li>
+        <li><strong>Purchase Credit Notes:</strong> Full synchronization with Zoho.</li>
+        <li><strong>AI Document Extraction:</strong> Purchase invoice images are parsed by Gemini 2.5 Flash to automatically pre-fill line items, GSTIN, and totals.</li>
+      </ul>
+
+      <h4>5.4 Inventory &amp; Equipment Module</h4>
+      <p><strong>Pages:</strong> Dashboard, Material, Machinery, Locations, Location Detail, Transactions, Audit Trail, Stock Movements.</p>
+      <ul>
+        <li><strong>Item master (materials):</strong> Configured with HSN, GST, units, categories, average cost, and price history tracking.</li>
+        <li><strong>Machinery master:</strong> Dedicated repair management, live working status tracking, and machinery-specific stock dialogs.</li>
+        <li><strong>Locations:</strong> Physical sites, central warehouses, and auto-generated project locations.</li>
+        <li><strong>Transactions:</strong> Purchase, Consumed, Lost, Scrapped, Purchase Return, and Reconciliation. Each transaction rigorously captures Name + Email + Timestamp into <code>audit_logs</code>.</li>
+        <li><strong>Reconciliation (RCN):</strong> Unifies consumption and material transfers into a single flat reconciliation event without spawning messy child records, preserving a clean audit story.</li>
+        <li><strong>Audit Trail:</strong> Deep views into single item histories and comprehensive stock comparisons.</li>
+      </ul>
+
+      <h4>5.5 HRM Module</h4>
+      <p><strong>Pages:</strong> Dashboard, Onboarding, Employees, Masters, Attendance, Records, Payments, Slips, Settings.</p>
+      <ul>
+        <li><strong>Onboarding:</strong> Pending status queues, bulk Excel upload, and strict master data validation.</li>
+        <li><strong>Employee master:</strong> Aadhaar validation, rigid salary structures, fixed deductions, and bank/UPI details.</li>
+        <li><strong>Attendance Entry:</strong> Sundays visually highlighted (as advance days), featuring a minimised summary panel for daily totals.</li>
+        <li><strong>Quick Pay UPI &amp; Exports:</strong> One-tap UPI deep-link payments with built-in boundaries, plus pre-formatted bulk bank export CSVs for ICICI, HDFC, and SBI corporate banking templates.</li>
+      </ul>
+
+      <h4>5.6 Workspace Module</h4>
+      <p><strong>Pages:</strong> Dashboard, Files, Company Documents, Recent Activity, Trash.</p>
+      <ul>
+        <li>Backed securely by the organisation's connected Google Drive.</li>
+        <li><strong>Mirrors the ERP hierarchy:</strong> Customers, Vendors, Projects, and RA Bills each get their own folder tree automatically maintained inside Drive.</li>
+        <li><strong>Auto-recovery triggers:</strong> If a folder is manually deleted in Drive, the next ERP write automatically recreates it.</li>
+        <li><strong>Important file lock:</strong> Files marked "important" cannot be deleted without an explicit secondary unlock.</li>
+      </ul>
+
+      <h4>5.7 Analytics &amp; 5.8 Finance</h4>
+      <ul>
+        <li><strong>Analytics:</strong> Strictly Admin-only. Cross-module roll-ups pull from Inventory consumption, HRM payroll, and Sales billing to calculate accurate project profitability and cost-vs-budget.</li>
+        <li><strong>Finance &amp; Accounting:</strong> An admin-only bridge router that opens the connected company's Zoho Books in a new tab. No accounting UI is duplicated inside the ERP — the system defers entirely to Zoho as the system-of-record.</li>
+      </ul>
+
+      <h4>5.9 Administrator &amp; 5.10 SuperAdmin</h4>
+      <ul>
+        <li><strong>Administrator:</strong> Manage org users, pre-invites, soft-deletes, email changes, companies, signatures, seals, bank details, and all numbering series with default T&amp;Cs.</li>
+        <li><strong>SuperAdmin:</strong> Platform-level control. Approves, disables, or deletes tenant organisations. Toggles specific modules per organisation, manages public sign-ups, views platform-wide analytics, and manages the global auth screen branding.</li>
+      </ul>
+    </section>
+
+    <!-- 03 Feature Deep Dives -->
+    <section id="deep-dives">
+      <div class="section-eyebrow"><span class="eyebrow-num">03</span><span class="eyebrow-line"></span></div>
+      <h2>Feature Deep Dives</h2>
+
+      <h3>6.1 RA Bill Engine (Running Account Bills)</h3>
+      <p>Running Account Bills are the absolute heart of construction billing. Each RA bill represents the cumulative quantity executed on each line item up to a given date, with the new bill's value being the exact delta against the previous bill.</p>
+      
+      <div class="feature-grid">
+        <div class="feature-card"><div class="fc-title">Opening RA Baseline</div><p class="fc-desc">Projects can declare an "RA0" baseline representing work already executed before the system was adopted. Subsequent RA1, RA2 carry this forward automatically.</p></div>
+        <div class="feature-card"><div class="fc-title">line_identifier Matching</div><p class="fc-desc">Each line carries a stable identifier so that quantities flow correctly across versions even if text descriptions are later edited.</p></div>
+        <div class="feature-card"><div class="fc-title">6-Decimal Precision</div><p class="fc-desc">Quantities are stored with 6 decimals; UI rounding happens only at render time, eliminating the classic "₹0.01 mismatch" between bill totals and sum of lines.</p></div>
+        <div class="feature-card"><div class="fc-title">Hold Redistribution</div><p class="fc-desc">When a hold (retention) is added or removed, the engine redistributes the value pro-rata across the affected lines, validating that the sum exactly reconciles.</p></div>
+        <div class="feature-card"><div class="fc-title">Carry-Forward Sync</div><p class="fc-desc">Editing a previous RA bill triggers a controlled recompute of all subsequent bills.</p></div>
+        <div class="feature-card"><div class="fc-title">Spreadsheet-like UX</div><p class="fc-desc">Cells accept formulas, support drag-fill, and use O(1) hash maps for instant lookups across thousands of rows.</p></div>
+      </div>
+      <p><strong>Export Capabilities:</strong> RA Bills support nested attachments (drawings, photos) that travel with the bill into PDF exports. PDFs utilize Arial-only typography for crisp printing, with configurable display filters. Furthermore, a bill can be cloned directly into a Google Sheet via the Sheets API, preserving the exact ERP layout.</p>
+
+      <h3>6.2 HRM Payroll Engine</h3>
+      <ul>
+        <li><strong>Recursive balance walk:</strong> Rolling balances (advance, deduction, pending dues) are computed by an explicit loop walking from the employee's first-ever entry forward, ensuring a stable result independent of grid order.</li>
+        <li><strong>-1 sentinel:</strong> The grid distinguishes three states: a real value, a manually-entered zero, and a "deleted" cell. The sentinel <code>-1</code> represents deletion so downstream aggregations can ignore it without losing audit history.</li>
+        <li><strong>Debounced calculations &amp; 2-decimal constraints:</strong> Cell edits trigger debounced recomputes to avoid thrash on fast typists, while money columns strictly enforce 2 decimals at the database schema level.</li>
+        <li><strong>Sunday weekly cycle:</strong> Submissions are gated to Sundays, ensuring uniform week boundaries across projects.</li>
+        <li><strong>Slip PDF generation:</strong> Slips are rendered into a fixed-width 794px off-screen HTML node and then captured to canvas, producing pixel-perfect A4 PDFs irrespective of the user's viewport.</li>
+      </ul>
+
+      <h3>6.3 Inventory Transfers</h3>
+      <p>A three-stage transfer workflow ensures physical material movements are reflected accurately in stock without double-counting:</p>
+      
+      <div class="flow">
+        <div class="flow-step"><div class="flow-dot">📋</div><div class="flow-label">CREATED</div></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><div class="flow-dot">📤</div><div class="flow-label">OUTPASS</div></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><div class="flow-dot">🚚</div><div class="flow-label">DISPATCHED</div></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><div class="flow-dot">✅</div><div class="flow-label">DELIVERED</div></div>
+      </div>
+      <ul>
+        <li>A <strong>SECURITY DEFINER RPC</strong> enforces the strict progression rule — clients <em>cannot</em> revert a transfer backwards, even with crafted API requests.</li>
+        <li>Stock movements are committed <em>only</em> on <strong>DELIVERED</strong>, completely eliminating the common "lost-in-transit" double-counting problem.</li>
+        <li>Permissions are strictly tier-checked: managers can advance stages, but only admins can hard-cancel a delivered transfer.</li>
+      </ul>
+
+      <h3>6.4 Customer, Invoice &amp; Quotation Systems</h3>
+      <ul>
+        <li><strong>Identity &amp; Address Model:</strong> <code>Trade Name</code> is the legal name printed on invoices, while <code>display_name</code> is a unique short nickname used internally. Billing and shipping addresses are first-class entities; project addresses inherit automatically.</li>
+        <li><strong>Billing Company Lock:</strong> Once a customer's first approved document is issued from a particular company, that pairing is securely locked to prevent accidental cross-entity invoicing.</li>
+        <li><strong>Quotation Settings:</strong> Features General T&amp;C applied by default, Special T&amp;C appended per quote, configurable Signature blocks, and Default units resolved directly from the item master.</li>
+      </ul>
+    </section>
+
+    <!-- 04 Integrations -->
+    <section id="integrations">
+      <div class="section-eyebrow"><span class="eyebrow-num">04</span><span class="eyebrow-line"></span></div>
+      <h2>Deep Integrations</h2>
+      
+      <div class="callout">
+        <span class="callout-icon">🔗</span>
+        <div>The ERP treats external systems not as competitors, but as specialized engines. Zoho acts as the ledger, Drive acts as the file cabinet, and the AI Gateway processes unstructured text.</div>
+      </div>
+
+      <h4>7.1 Zoho Books</h4>
+      <p>The ERP treats Zoho Books as the final accounting system-of-record. The integration features:</p>
+      <ul>
+        <li><strong>OAuth:</strong> Per-company OAuth grant with refresh-token rotation handled by edge functions.</li>
+        <li><strong>Identity matching:</strong> Customers and vendors are intelligently matched by GSTIN + display name.</li>
+        <li><strong>Tax Mappings:</strong> Items are tax-classified by HSN, and a dedicated TDS settings card maintains live mapping between local TDS codes and Zoho withholding tax IDs.</li>
+        <li><strong>Sync Surface:</strong> Fully covers <code>sync-invoice</code>, <code>creditnote</code>, <code>customer</code>, <code>vendor</code>, <code>purchase-bill</code>, <code>purchase-creditnote</code>, and <code>ra-invoice</code>. Sync is strictly restricted to GST-registered counterparties by design. Each entity explicitly displays its Zoho sync metadata (last synced, Zoho doc ID, status).</li>
+      </ul>
+
+      <h4>7.2 Google Drive (Workspace)</h4>
+      <ul>
+        <li><strong>Security:</strong> AES-256-GCM encryption of OAuth tokens at rest, utilizing an In-Production consent screen.</li>
+        <li><strong>Mirrored hierarchy:</strong> The ERP automatically creates and maintains a Drive folder tree that perfectly mirrors Customers, Vendors, Projects, and RA Bills.</li>
+        <li><strong>Auto-recovery:</strong> If a mirrored folder is deleted directly in Google Drive, the next ERP write transparently recreates it. Cross-org access is mathematically impossible due to strict per-org token isolation.</li>
+      </ul>
+
+      <h4>7.3 Lovable AI Gateway &amp; 7.4 GSTIN</h4>
+      <ul>
+        <li><strong>Lovable AI:</strong> A single managed AI gateway (using Gemini and GPT-5 families) powers <em>Smart Search (⌘K)</em> for natural-language routing, a context-aware floating <em>Chat Assistant</em>, a <em>Document Summarizer</em>, and automated <em>Purchase Image Extraction</em>.</li>
+        <li><strong>GSTIN Verification:</strong> Edge functions actively validate entered GSTINs against the official Indian government registry, returning the precise legal name, address, and registration status during customer/vendor onboarding.</li>
+      </ul>
+    </section>
+
+    <!-- 05 UI, UX & Realtime -->
+    <section id="ui-ux">
+      <div class="section-eyebrow"><span class="eyebrow-num">05</span><span class="eyebrow-line"></span></div>
+      <h2>UI, UX &amp; Realtime Notifications</h2>
+      
+      <ul>
+        <li><strong>Visual Language:</strong> Zoho Books-inspired minimalism featuring generous whitespace in light mode, and high-density alternating rows (<code>#111827</code> / <code>#1a2332</code>) in dark mode. Theme toggle covers Light, Dark, and System states.</li>
+        <li><strong>Colour Discipline:</strong> Amber is reserved <em>exclusively</em> for warnings and pending statuses.</li>
+        <li><strong>Unified Navigation:</strong> A top-3 floating sidebar toggle and a unified header that consolidates AI search, theme, notification bell, and the Superadmin context banner.</li>
+        <li><strong>Dialog Pattern:</strong> All modals follow a strict <code>max-h-[90vh] overflow-hidden flex-col</code> shell with a flexible scrolling body, guaranteeing native scrolling behaviour even for massive forms. Responsive table wrappers gracefully fall back to horizontal scrolling without sacrificing column widths on mobile.</li>
+        <li><strong>Notifications &amp; Transport:</strong> The Notification Bell surfaces server-side filtered alerts via Supabase Realtime <code>postgres_changes</code>, backed by a robust 60-second fallback poll ensuring zero missed alerts during mobile network handoffs.</li>
+      </ul>
+    </section>
+
+    <!-- 06 Operations -->
+    <section id="operations">
+      <div class="section-eyebrow"><span class="eyebrow-num">06</span><span class="eyebrow-line"></span></div>
+      <h2>Operational Capabilities</h2>
+      <div class="feature-grid">
+        <div class="feature-card"><div class="fc-title">Bulk Imports &amp; Exports</div><p class="fc-desc">HRM employee bulk upload via Excel with precise row-level validation. Full export pipelines to CSV, Excel, and PDF for materials, machinery, stock, RA bills, and reports.</p></div>
+        <div class="feature-card"><div class="fc-title">Document Numbering</div><p class="fc-desc">Sequential, company-specific counters for every document type, featuring explicit database cache invalidation to prevent multi-client collisions.</p></div>
+        <div class="feature-card"><div class="fc-title">Navigation Blocker</div><p class="fc-desc">Active forms actively intercept browser history navigation (back/forward/refresh) to prevent devastating accidental data loss during long data entry sessions.</p></div>
+        <div class="feature-card"><div class="fc-title">Soft-Delete &amp; Audit</div><p class="fc-desc">Users and master records support non-destructive soft-delete with restoration. Every inventory movement is permanently timestamped with the acting user's Identity.</p></div>
+      </div>
+    </section>
+
+    <!-- 07 Glossary -->
+    <section id="glossary">
+      <div class="section-eyebrow"><span class="eyebrow-num">07</span><span class="eyebrow-line"></span></div>
+      <h2>Glossary of Terms</h2>
+      
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th style="width: 200px;">Term</th><th>Meaning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>RA Bill</strong></td><td>Running Account Bill — cumulative project bill issued periodically detailing all work up to a date.</td></tr>
+            <tr><td><strong>RCN</strong></td><td>Reconciliation transaction unifying consumption + transfer in one definitive event.</td></tr>
+            <tr><td><strong>HSN</strong></td><td>Harmonized System of Nomenclature — international tax classification code for physical goods.</td></tr>
+            <tr><td><strong>TDS</strong></td><td>Tax Deducted at Source — standard Indian withholding tax mechanism.</td></tr>
+            <tr><td><strong>IGST</strong></td><td>Integrated GST — tax applied specifically on inter-state supplies.</td></tr>
+            <tr><td><strong>CGST / SGST</strong></td><td>Central / State GST — split taxes applied on intra-state supplies.</td></tr>
+            <tr><td><strong>GSTIN</strong></td><td>Goods &amp; Services Tax Identification Number.</td></tr>
+            <tr><td><strong>Outpass</strong></td><td>First physical stage of an inventory transfer indicating material has left the source location.</td></tr>
+            <tr><td><strong>Override Mode</strong></td><td>A Superadmin's powerful session securely operating inside a specific tenant organisation's isolated sandbox.</td></tr>
+            <tr><td><strong>Shadow Item</strong></td><td>A non-billable line carried safely on an invoice for internal record-keeping without affecting the final tax totals.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="closing-quote">
+      <p>The platform is engineered around three uncompromising principles: strict tenant isolation, shared and consistent UX, and deep integrations where they add real accounting value. The result is an ERP that scales from a single-company contractor to a multi-entity construction group without changing a line of frontend code — and without ever putting one tenant's data within reach of another.</p>
+    </div>
+  </article>
+</div>
+
+<footer>
+  <p>Built with precision. Live at <a href="https://erp.rajsandilya.com" target="_blank">erp.rajsandilya.com</a></p>
+</footer>
+
+<script>
+  function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('active'); }
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.toc a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const match = document.querySelector(`.toc a[href="#${entry.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body></html>
