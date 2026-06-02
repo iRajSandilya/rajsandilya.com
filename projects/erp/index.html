@@ -1,37 +1,43 @@
 <html lang="en"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Modern Medium-scale - Construction ERP —by Raj Sandilya</title>
+  <title>A Modern Medium-scale Construction ERP by Raj Sandilya</title>
   <link rel="icon" href="/raj-profile-round.png" type="image/x-icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@300;400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
   <style>
+    /* Basic resets */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
+    
     :root {
       --black: #0a0a0a; --gray-900: #111; --gray-700: #374151; --gray-500: #6b7280;
       --gray-300: #d1d5db; --gray-100: #f3f4f6; --gray-50: #f9fafb; --white: #ffffff;
       --rule: #e5e7eb; --tag-bg: #f0f0ee;
     }
+    
     body { font-family: 'Geist', sans-serif; font-size: 16px; line-height: 1.75; color: var(--black); background: var(--white); overflow-x: hidden; }
 
-    /* ── HEADER ── */
+    /* HEADER */
     header { border-bottom: 1px solid var(--gray-100); background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); position: fixed; width: 100%; top: 0; z-index: 50; }
     .header-inner { max-width: 72rem; margin: 0 auto; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
     .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
     .logo img { width: 32px; height: 32px; border-radius: 50%; }
     .logo span { font-size: 1.4rem; font-weight: 700; color: var(--black); }
+    
     nav.desktop { display: flex; align-items: center; gap: 32px; }
     nav.desktop a { display: flex; align-items: center; gap: 6px; color: var(--gray-500); text-decoration: none; font-size: 14.5px; transition: color 0.2s; }
     nav.desktop a:hover, nav.desktop a.active { color: var(--black); }
+    
     .mobile-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: var(--black); }
+    
     #mobile-menu { display: none; background: white; border-top: 1px solid var(--gray-100); }
     #mobile-menu.active { display: block; }
     #mobile-menu nav { display: flex; flex-direction: column; padding: 16px; }
     #mobile-menu a { display: flex; align-items: center; gap: 8px; padding: 12px 0; color: var(--gray-500); text-decoration: none; font-size: 15px; }
 
-    /* ── MASTHEAD & HERO IMAGE ── */
+    /* MASTHEAD & HERO IMAGE */
     .masthead { padding: 140px 16px 40px; max-width: 72rem; margin: 0 auto; text-align: center; }
     .site-tag { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 24px; display: inline-flex; align-items: center; gap: 8px; }
     .masthead h1 { font-family: 'Instrument Serif', serif; font-size: clamp(40px, 6vw, 68px); line-height: 1.05; letter-spacing: -0.02em; color: var(--black); max-width: 800px; margin: 0 auto 24px; }
@@ -41,14 +47,22 @@
     .hero-image-container { max-width: 72rem; margin: 0 auto 64px; padding: 0 16px; }
     .hero-image-container img { width: 100%; height: auto; display: block; border-radius: 16px; border: 1px solid var(--gray-100); background: var(--gray-50); box-shadow: 0 20px 40px rgba(0,0,0,0.04); }
 
-    /* ── TOC & LAYOUT ── */
+    /* STATS BAR */
+    .stats-bar { border-bottom: 1px solid var(--rule); border-top: 1px solid var(--rule); background: var(--gray-50); margin-bottom: 64px; }
+    .stats-inner { max-width: 72rem; margin: 0 auto; padding: 0 16px; display: grid; grid-template-columns: repeat(4, 1fr); }
+    .stat-item { padding: 32px 0; border-right: 1px solid var(--rule); text-align: center; }
+    .stat-item:last-child { border-right: none; }
+    .stat-num { font-family: 'Instrument Serif', serif; font-size: 36px; line-height: 1; margin-bottom: 8px; display: block; color: var(--black); }
+    .stat-label { font-size: 11px; font-family: 'Geist Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-500); }
+
+    /* TOC & LAYOUT */
     .layout { max-width: 72rem; margin: 0 auto; padding: 0 16px 64px; display: grid; grid-template-columns: 220px 1fr; gap: 64px; align-items: start; }
     .toc { position: sticky; top: 100px; font-size: 13.5px; }
     .toc-title { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-500); margin-bottom: 16px; }
     .toc a { display: block; padding: 8px 0 8px 14px; border-left: 1px solid var(--gray-100); color: var(--gray-500); text-decoration: none; transition: all 0.2s; }
     .toc a:hover, .toc a.active { color: var(--black); border-left-color: var(--black); font-weight: 500; }
 
-    /* ── ARTICLE STYLES ── */
+    /* ARTICLE STYLES */
     .article { min-width: 0; }
     .article section { margin-bottom: 80px; }
     .section-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
@@ -66,25 +80,25 @@
     strong { font-weight: 500; color: var(--black); }
     code { font-family: 'Geist Mono', monospace; font-size: 13px; background: var(--gray-50); border: 1px solid var(--gray-100); padding: 2px 6px; border-radius: 4px; color: var(--black); }
 
-    /* ── CALLOUT BOXES ── */
+    /* CALLOUT BOXES */
     .callout { border: 1px solid var(--gray-100); background: var(--gray-50); border-radius: 8px; padding: 24px; margin: 32px 0; font-size: 15px; display: flex; gap: 16px; align-items: flex-start; line-height: 1.6; color: var(--gray-700); }
     .callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
 
-    /* ── FLOW DIAGRAM ── */
+    /* FLOW DIAGRAM */
     .flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin: 32px 0; background: var(--gray-50); border: 1px solid var(--gray-100); border-radius: 12px; padding: 32px; overflow-x: auto; }
     .flow-step { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 100px; }
     .flow-dot { width: 48px; height: 48px; border-radius: 50%; background: var(--white); border: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
     .flow-label { font-size: 12px; color: var(--black); font-weight: 500; letter-spacing: 0.05em; }
     .flow-arrow { color: var(--gray-300); font-size: 20px; padding: 0 12px; margin-bottom: 24px; flex-shrink: 0; }
 
-    /* ── FEATURE CARDS / GRIDS ── */
+    /* FEATURE CARDS / GRIDS */
     .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin: 24px 0; }
     .feature-card { background: var(--white); border: 1px solid var(--gray-100); border-radius: 12px; padding: 24px; transition: border-color 0.2s; }
     .feature-card:hover { border-color: var(--black); }
     .fc-title { font-weight: 600; font-size: 16px; color: var(--black); margin-bottom: 8px; }
     .fc-desc { font-size: 14.5px; color: var(--gray-500); line-height: 1.6; margin: 0; }
 
-    /* ── TABLES ── */
+    /* TABLES */
     .table-wrap { overflow-x: auto; margin: 32px 0; border: 1px solid var(--gray-100); border-radius: 12px; }
     table { width: 100%; border-collapse: collapse; font-size: 14.5px; text-align: left; }
     thead { background: var(--gray-50); border-bottom: 1px solid var(--gray-100); }
@@ -96,12 +110,12 @@
     .badge-admin { background: var(--black); color: var(--white); border-color: var(--black); }
     .badge-super { background: #e0e7ff; color: #3730a3; border-color: #c7d2fe; }
 
-    /* ── CLOSING QUOTE ── */
+    /* CLOSING QUOTE */
     .closing-quote { background: var(--gray-50); border: 1px solid var(--gray-100); border-radius: 16px; padding: 48px; margin: 64px 0 0; text-align: center; }
     .closing-quote p { font-family: 'Instrument Serif', serif; font-size: clamp(20px, 3vw, 28px); color: var(--black); line-height: 1.4; margin-bottom: 24px; }
     .closing-quote-attr { font-size: 12px; color: var(--gray-500); letter-spacing: 0.08em; font-family: 'Geist Mono', monospace; text-transform: uppercase; }
 
-    /* ── FOOTER ── */
+    /* FOOTER */
     footer { border-top: 1px solid var(--gray-100); background: var(--gray-50); text-align: center; padding: 48px 16px; font-size: 14px; margin-top: 80px; }
     footer a { color: var(--black); text-decoration: underline; }
 
@@ -109,6 +123,12 @@
       .layout { grid-template-columns: 1fr; gap: 40px; }
       .toc { position: static; margin-bottom: 24px; }
       .masthead { padding: 100px 16px 24px; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .stats-inner { grid-template-columns: 1fr 1fr; }
+      .flow { flex-direction: column; gap: 8px; }
+      .flow-arrow { transform: rotate(90deg); margin: 0; padding: 12px 0; }
     }
   </style>
 </head>
@@ -142,8 +162,8 @@
 
 <div class="masthead">
   <div class="site-tag">erp.rajsandilya.com</div>
-  <h1>A <em>Modern, Medium Scale -</em> Multi-Tenant Construction ERP</h1>
-  <p class="masthead-sub">A comprehensive, user-facing catalogue of every capability shipped in the ERP platform. This document describes what users can do — not how it is built. Features are organised by module, with sub-features, settings, exports, and edge cases listed exhaustively.</p>
+  <h1>A <em>Modern, Medium Scale</em> Multi-Tenant Construction ERP</h1>
+  <p class="masthead-sub">Here is a complete breakdown of a production-grade SaaS platform I built for construction, contracting, and project-based businesses. It covers every module, workflow, and operational decision we made.</p>
 </div>
 
 <div class="hero-image-container">
@@ -153,263 +173,306 @@
 <div class="layout">
   <aside class="toc">
     <p class="toc-title">Contents</p>
-    <a href="#platform-fundamentals">Part I — Platform Fundamentals</a>
-    <a href="#module-catalog">Part II — Module Catalogue</a>
-    <a href="#cross-cutting">Part III — Cross-Cutting Capabilities</a>
-    <a href="#data-isolation">Part IV — Data Isolation &amp; Security</a>
+    <a href="#org-model">01 - Organization Model</a>
+    <a href="#module-catalog">02 - Module Catalogue</a>
+    <a href="#deep-dives">03 - Feature Deep Dives</a>
+    <a href="#integrations">04 - Integrations</a>
+    <a href="#ui-ux">05 - UI, UX &amp; Realtime</a>
+    <a href="#operations">06 - Operations</a>
+    <a href="#data-isolation">07 - Data Isolation &amp; Security</a>
+    <a href="#access-gating">08 - Access Gating</a>
+    <a href="#glossary">09 - Glossary</a>
   </aside>
 
   <article class="article">
 
-    <section id="platform-fundamentals">
+    <!-- 01 Organization Model -->
+    <section id="org-model">
       <div class="section-eyebrow"><span class="eyebrow-num">01</span><span class="eyebrow-line"></span></div>
-      <h2>Part I — Platform Fundamentals</h2>
+      <h2>Organization &amp; Company Model</h2>
+      <p>A <strong>tenant organization</strong> basically acts as an umbrella that can hold <strong>multiple legal companies</strong>. Think of it like a holding group, sister concerns, or entities that have separate GSTINs[cite: 1].</p>
       
-      <h3>1. Multi-Tenant SaaS Model</h3>
       <ul>
-        <li>A single shared platform serves an unlimited number of independent organisations (tenants).</li>
-        <li>Each organisation has its own data, branding, integrations, document numbering, file storage, users, and settings. No tenant can see or touch another tenant's data.</li>
-        <li>All organisations use the same UI, same modules, same workflows — only their data, logos, and configurations differ.</li>
-        <li>A tenant's logo and name appear in the sidebar, headers, login screen, and all PDFs.</li>
-        <li>Each organisation can connect its own Zoho Books accounts, Google Drive folders, GSTIN profiles, bank accounts, and AI thresholds.</li>
-      </ul>
-      
-      <h3>2. Multi-Division Data Isolation</h3>
-      <ul>
-        <li>Every organisation can define multiple Divisions (e.g. North, South, Site-A, Site-B, Trading, Contracting). Each division has Name, Code, Description, and an Active toggle.</li>
-        <li>Users belong to one or more divisions, with one marked as their default.</li>
-        <li>Customers, vendors, projects, items, locations, machinery, stock transactions, quotations, invoices, proforma, credit notes, purchase orders, purchase credit notes, RA bills, workspace files, and HRM records are all scoped to a division.</li>
-        <li>Regular users only see records from divisions they are members of. Untagged records remain visible to administrators only.</li>
-        <li>Administrators and SuperAdmin bypass division scoping and see everything in the organisation.</li>
-        <li>New records are automatically stamped with the user's active division.</li>
-      </ul>
-
-      <h3>3. Multi-User &amp; Roles</h3>
-      <ul>
-        <li>Three role tiers per organisation: <strong>Admin, Manager, User (regular)</strong>. A global SuperAdmin sits above all organisations.</li>
-        <li>Admins manage users, settings, branding, integrations, and have full access to every module.</li>
-        <li>Managers operate day-to-day workflows (create/edit/submit) within the modules and divisions granted to them.</li>
-        <li>Per-user, per-division module grants decide which modules a user can open. Restricted modules — Administrator, Finance, Analytics — can only be granted to admins.</li>
-        <li>Users with prior activity cannot be hard-deleted; only deactivated so audit trails remain intact. Role badges are colour-coded throughout the UI.</li>
-      </ul>
-
-      <h3>4. Module Access Control</h3>
-      <ul>
-        <li>10 module tiles on the ERP Home. The SuperAdmin decides which modules each organisation can enable.</li>
-        <li>Within an organisation, admins assign per-division module access to each user.</li>
-        <li>Disabled modules render as locked tiles with a "Not Enabled" badge and a lock icon.</li>
-        <li>Direct URL navigation to a forbidden module shows a clear "Access Not Enabled" screen with Go Back / Back to Home options instead of redirecting silently. The screen distinguishes between module-not-enabled and admin-only reasons.</li>
-      </ul>
-
-      <h3>5. SuperAdmin Platform Controls</h3>
-      <ul>
-        <li>Single platform-wide SuperAdmin sits outside every organisation and never appears in any organisation's user list.</li>
-        <li><strong>SuperAdmin Dashboard</strong> with stat cards: Total Organisations, Active, Pending Approval, Disabled, Total Users, Pending Requests.</li>
-        <li><strong>Organisations list:</strong> search and filter by status, enter any organisation in clearly-marked Override Mode, activate/suspend/disable/re-enable.</li>
-        <li><strong>Override Mode banner:</strong> an amber pill at top-right shows the organisation being impersonated, with an Exit button.</li>
-        <li><strong>Pending Requests:</strong> review every organisation registration request, approve with chosen modules, or reject with an optional reason. Approval/rejection history is preserved.</li>
-        <li><strong>Platform Settings:</strong> toggles for "Allow New Organisation Registrations" and "Allow Public Signups".</li>
-        <li><strong>Platform Branding:</strong> set the app logo, app name, tagline, description on the login screen, access request message, support contact, and footer text. A live preview renders changes in real time.</li>
-        <li><strong>Per-organisation management:</strong> overview stats, members list with role editing/removal, rename organisation, danger-zone delete that wipes all members and the organisation. Global Users screen for cross-organisation user management.</li>
-      </ul>
-
-      <h3>6. Authentication &amp; Onboarding</h3>
-      <ul>
-        <li>Split-panel sign-in/sign-up screen with branded left panel (logo, app name, tagline, description, access message, support contact, footer) and form panel on the right. All branding fields driven by SuperAdmin settings. Mobile collapses to a single column.</li>
-        <li><strong>Login:</strong> email + password with show/hide toggle, inline validation, loading spinner, success and error toasts.</li>
-        <li><strong>Sign Up:</strong> name, email, password (min 6), confirm password with match validation.</li>
-        <li><strong>Invite-based join:</strong> invite links pre-fill email (locked) and place the user directly into the inviting organisation.</li>
-        <li><strong>Forgot Password / Reset:</strong> separate view, password-reset email, "Back to login" button.</li>
-        <li><strong>Pending Organisation screen:</strong> shown when a signed-in user has no organisation assignment, with "Register New Organisation" or "Sign Out".</li>
-        <li><strong>Register Organisation flow:</strong> name + module checkboxes (Inventory, Sales, HRM, Analytics). After submission shows Pending (amber) or Rejected (with reason and "Submit New Request") states until SuperAdmin acts.</li>
-      </ul>
-
-      <h3>7. Personal Profile</h3>
-      <ul>
-        <li>Avatar upload (max 5 MB, auto-compressed) with Remove Photo option; initials fallback in primary colour.</li>
-        <li>Read-only email and role; editable full name; password change (min 6 chars, confirm) with spinner.</li>
-        <li>Theme toggle: Light / Dark / System.</li>
-        <li>Quick Actions configurator — pick up to 6 favourite quick-create shortcuts shown on the ERP Home; drag-and-drop to reorder; minimum of 1 enforced; Save and Reset controls.</li>
+        <li>Each company has its own GSTIN, address, bank details, signature, and official seal.</li>
+        <li>Each company can independently connect to Zoho Books with its own exclusive OAuth grant.</li>
+        <li>All sales documents like quotations, invoices, RA bills, and credit notes are issued on behalf of a chosen company. The system automatically merges the selected company's bank metadata, signature, and seal into the generated PDFs.</li>
+        <li><strong>Billing Company Lock:</strong> Customer records are permanently locked to a billing company once the first approved document is issued, so there is no accidental cross-entity invoicing.</li>
+        <li>Per-tenant branding (like the logo, accent color, and brand mark) is isolated, while the Superadmin handles the overall platform-level brand that appears on global auth screens.</li>
       </ul>
     </section>
 
+    <!-- 02 Module Catalogue -->
     <section id="module-catalog">
       <div class="section-eyebrow"><span class="eyebrow-num">02</span><span class="eyebrow-line"></span></div>
-      <h2>Part II — Module Catalogue</h2>
+      <h2>Module Catalogue</h2>
+      <p>The ERP Home (<code>/</code>) shows a simple card grid for all the modules. There is a <strong>Quick Create</strong> strip on the home screen that gives you a custom 4x1 grid for one-tap actions like New Invoice or New Project. This is filtered automatically based on what modules the current user is permitted to access.</p>
 
-      <h3>8. ERP Home &amp; Navigation</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Module</th><th>Route</th><th>Gated By</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Sales</strong></td><td><code>/sales</code></td><td><span class="badge">enabled_modules</span></td></tr>
+            <tr><td><strong>Project Management</strong></td><td><code>/projects</code></td><td><span class="badge">enabled_modules</span></td></tr>
+            <tr><td><strong>Purchase</strong></td><td><code>/purchase</code></td><td><span class="badge">enabled_modules</span></td></tr>
+            <tr><td><strong>Workspace</strong></td><td><code>/workspace</code></td><td><span class="badge">enabled_modules</span></td></tr>
+            <tr><td><strong>Human Resource</strong></td><td><code>/hrm</code></td><td><span class="badge">enabled_modules</span></td></tr>
+            <tr><td><strong>Equipment &amp; Inventory</strong></td><td><code>/inventory</code></td><td><span class="badge">enabled_modules</span></td></tr>
+            <tr><td><strong>Analytics</strong></td><td><code>/analytics</code></td><td><span class="badge badge-admin">admin role + module</span></td></tr>
+            <tr><td><strong>Finance &amp; Accounting</strong></td><td>external</td><td><span class="badge badge-admin">admin role + module</span></td></tr>
+            <tr><td><strong>Administrator</strong></td><td><code>/admin</code></td><td><span class="badge badge-admin">admin role</span></td></tr>
+            <tr><td><strong>SuperAdmin</strong></td><td><code>/superadmin</code></td><td><span class="badge badge-super">superadmin only</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Detailed Capabilities by Module</h3>
+
+      <h4>5.1 Sales Module</h4>
+      <p><strong>Pages:</strong> Dashboard, Customers, Quotations, Invoices, Credit Notes, Proforma, RA Bills (project view), Project Dashboard, All Invoices.</p>
       <ul>
-        <li>Sticky header with company logo + name, ⌘K AI Smart Search bar, notification bell, theme toggle, and user-avatar dropdown.</li>
-        <li>User dropdown links: My Profile, System Settings (admins), Platform Control (SuperAdmin), Logout.</li>
-        <li><strong>Quick Create Bar:</strong> up to 6 user-configured shortcuts (Create Invoice, New PO, Add Employee, etc.) shown as coloured icon buttons.</li>
-        <li><strong>Module Tile Grid:</strong> 3-column responsive cards with module icon, name, short description, hover scale-up, and chevron. Disabled modules show 60% opacity, not-allowed cursor, and "Not Enabled" badge. "Coming Soon" badge on roadmap tiles.</li>
-        <li>Finance tile opens Zoho Books in a new browser tab. Sidebars across modules are collapsible, with a mobile drawer fallback.</li>
+        <li><strong>Customer master:</strong> Separation of Trade Name (legal) versus <code>display_name</code> (unique nickname), billing and shipping address mapping, GSTIN, default-type sync, and optional manual Zoho contact ID bypass for legacy migration.</li>
+        <li><strong>Quotations:</strong> General versus Special Terms &amp; Conditions, default unit logic, configurable signature blocks, and clean PDF exports.</li>
+        <li><strong>Direct Invoices:</strong> Pre-filled default T&amp;C, calculated due dates from payment terms, sequential numbering, and dual-mode PDFs (Detailed line-items versus Summary).</li>
+        <li><strong>Shadow item compliance:</strong> Non-billable line items can be carried for record-keeping without messing up real tax totals.</li>
+        <li><strong>Negative-quantity blocking:</strong> Hard blocks at the form level prevent accidental refund-shaped invoices.</li>
+        <li><strong>Credit Notes:</strong> Automatic IGST versus CGST routing based on place-of-supply, fully linked to the source invoice and mapped to the matching Zoho credit note.</li>
+        <li><strong>Proforma Invoices:</strong> Separate numbering series with a clear "not-for-tax" stamp.</li>
       </ul>
 
-      <h3>9. Sales Module</h3>
-      <h4>9.1 Sales Dashboard</h4>
-      <p>KPI summary cards: Total Customers (Direct/Project breakdown), Active Quotations, Pending Invoices, Monthly Revenue. Recent Customers widget (last 5 with type + status). Module readiness widget (Customer Management, Quotations, Invoicing, RA Bills).</p>
-      
-      <h4>9.2 Customers</h4>
+      <h4>5.2 Project Management Module</h4>
+      <p><strong>Pages:</strong> Projects, Project Detail, Master Items, RA Bills, RA Bill Edit, RA Bill View.</p>
       <ul>
-        <li>List page with search (name, GSTIN, PAN, project name/ID), filter by customer type, approval status, and "Group By" parameters.</li>
-        <li><strong>Add/Edit dialog:</strong> tabbed Direct vs Project. Fields include Display Name (unique nickname), Trade Name, Legal Name, live GSTIN validation (auto-derives PAN + state code), Opening Balance, Payment Terms, separate Billing and Shipping addresses, Sister-Concern company selector, multiple Contact Persons, and a "Create as Lead" toggle.</li>
-        <li>Project customers add Project Name, Project ID (unique), Project Client (end owner), Project Site Address, separate Billing &amp; Registration addresses, and an Opening RA Bill option.</li>
-        <li><strong>Customer Detail page:</strong> info sidebar with GSTIN, PAN, sister concern, addresses, inventory location link, contacts, Zoho contact ID/status/last-synced. Locked badge appears once an approved transaction exists; certain fields then become read-only. Tabs: Invoices, Credit Notes, Quotations, Contacts.</li>
+        <li>A unique <code>project_id</code> consistent across Inventory (locations, transfers), HRM (attendance, payroll), and Sales (RA bills).</li>
+        <li>An auto-generated <strong>location entity</strong> so that the project's site address acts as a real inventory location for material transfers.</li>
+        <li>A <strong>Master Items</strong> list with per-item HSN and GST mappings inherited from the global item master.</li>
+        <li>A <strong>Financial Summary</strong> showing total contracted value, total billed, holds outstanding, and net balance.</li>
       </ul>
 
-      <h4>9.3 Leads &amp; 9.4 Quotations</h4>
+      <h4>5.3 Purchase Module</h4>
+      <p><strong>Pages:</strong> Dashboard, Vendors, Orders, Transactions, Credit Notes.</p>
       <ul>
-        <li>Dedicated Leads list with type, project info, contact, and Convert button (warns that project leads will auto-create an inventory location).</li>
-        <li><strong>Quotations List:</strong> search, filter by Status, Customer, Lead-type. Advanced filters: Date, Min/Max Amount. Lead-sourced quotations show an amber "LEAD" badge.</li>
-        <li><strong>Quotation View:</strong> company logo, customer block, status badge, status actions (Mark as Sent, Approve, Reject), Convert to Invoice, Download PDF, Export as Proforma Invoice, and Convert to Proforma Invoice. Rate-only quotations auto-detected and Qty/Amount columns hidden.</li>
+        <li><strong>Vendor master:</strong> GSTIN, payment terms, bank details, and Zoho vendor mapping.</li>
+        <li><strong>Purchase Orders:</strong> Drag-drop item selection, automatic billing company resolution, and signature-bearing PDFs.</li>
+        <li><strong>Purchase Transactions:</strong> Vendor invoice number priority (the vendor's invoice number takes precedence over the internal reference for matching), and per-line tax-rate overrides for special cases.</li>
+        <li><strong>Purchase Credit Notes:</strong> Full synchronization with Zoho.</li>
+        <li><strong>AI Document Extraction:</strong> Purchase invoice images are parsed by Gemini 2.5 Flash to automatically pre-fill line items, GSTIN, and totals.</li>
       </ul>
 
-      <h4>9.5 Proforma &amp; 9.6 Direct Invoices</h4>
+      <h4>5.4 Inventory &amp; Equipment Module</h4>
+      <p><strong>Pages:</strong> Dashboard, Material, Machinery, Locations, Location Detail, Transactions, Audit Trail, Stock Movements.</p>
       <ul>
-        <li><strong>Direct Invoices Summary banner:</strong> Time Period selector showing Sales, Tax Amount, Total, Invoice Count.</li>
-        <li><strong>Create Invoice dialog:</strong> customer picker, company/billing entity, dispatch location, Invoice Date, Due Date (auto-calculated), Payment Terms, PO Number. GST type auto-detected (CGST+SGST vs IGST) from GSTIN state comparison. Drag-and-drop reorderable line items.</li>
-        <li><strong>Invoice View:</strong> visual Status Timeline (Draft → Submitted → Customer Accepted → Admin Accepted → Invoiced → Sent → Cancelled). Role-aware transition buttons. Download PDF, Print, Refresh from Zoho, Create Credit Note. Items table groups GST breakdown by rate automatically; TDS section/amount displayed.</li>
+        <li><strong>Item master (materials):</strong> Configured with HSN, GST, units, categories, average cost, and price history tracking.</li>
+        <li><strong>Machinery master:</strong> Dedicated repair management, live working status tracking, and machinery-specific stock dialogs.</li>
+        <li><strong>Locations:</strong> Physical sites, central warehouses, and auto-generated project locations.</li>
+        <li><strong>Transactions:</strong> Purchase, Consumed, Lost, Scrapped, Purchase Return, and Reconciliation. Each transaction rigorously captures the user's name, email, and timestamp into the <code>audit_logs</code>.</li>
+        <li><strong>Reconciliation (RCN):</strong> Unifies consumption and material transfers into a single flat reconciliation event without spawning messy child records, keeping the audit story very clean.</li>
+        <li><strong>Audit Trail:</strong> Deep views into single item histories and comprehensive stock comparisons.</li>
       </ul>
 
-      <h4>9.7 Sales Credit Notes</h4>
-      <p>Summary cards (Total ₹, Draft ₹, Issued ₹). Filters by Status, Company, Customer. Actions include Submit for Approval, Approve, Issue Credit Note, Reverse, Cancel, Delete.</p>
-
-      <h3>10. Project Management &amp; RA Bills</h3>
-      <h4>10.1 Projects List &amp; 10.2 Project Detail Dashboard</h4>
+      <h4>5.5 HRM Module</h4>
+      <p><strong>Pages:</strong> Dashboard, Onboarding, Employees, Masters, Attendance, Records, Payments, Slips, Settings.</p>
       <ul>
-        <li>Mirrors Customers page but filtered to project customers.</li>
-        <li><strong>Analytics tab:</strong> Date Range selector. KPI cards for Revenue, Total Cost, Profit (colour-coded), Margin %. Cost Breakdown Pie, P&amp;L Bar Chart. Add Project Expense dialog. Currency auto-scales to Lakhs / Crores.</li>
-        <li><strong>Items tab:</strong> project-specific BOQ/contract items. <strong>RA Bills tab:</strong> filtered RA bills with quick-create.</li>
+        <li><strong>Onboarding:</strong> Pending status queues, bulk Excel upload, and strict master data validation.</li>
+        <li><strong>Employee master:</strong> Aadhaar validation, rigid salary structures, fixed deductions, and bank/UPI details.</li>
+        <li><strong>Attendance Entry:</strong> Sundays visually highlighted (as advance days), featuring a minimized summary panel for daily totals.</li>
+        <li><strong>Quick Pay UPI &amp; Exports:</strong> One-tap UPI deep-link payments with built-in boundaries, plus pre-formatted bulk bank export CSVs for ICICI, HDFC, and SBI corporate banking templates.</li>
       </ul>
 
-      <h4>10.3 Master Items &amp; 10.4 RA Bills List</h4>
-      <p>Org-wide master items with Name, HSN/SAC Code, Tax Rate, Active toggle. RA Bills List includes search, Status filter (Pending grouping, Draft, Submitted, Client Accepted, Admin Accepted, Invoiced, Sent). Opening bills excluded from "Pending" automatically.</p>
-
-      <h4>10.5 RA Bill View &amp; 10.6 RA Bill Spreadsheet Editor</h4>
+      <h4>5.6 Workspace Module</h4>
+      <p><strong>Pages:</strong> Dashboard, Files, Company Documents, Recent Activity, Trash.</p>
       <ul>
-        <li>6-step visual Status Timeline. "Opening Bill" amber badge for baseline bills.</li>
-        <li><strong>Export PDF dialog:</strong> Filter Mode (This Bill Only / Complete Bill / Selected Categories), multi-select category list, toggles for Show Hold Column, Hide Previous &amp; Cumulative, Show Groupwise Totals.</li>
-        <li><strong>Version History side panel:</strong> last 10 changes with user, timestamp, structured diff (header changes + per-line additions/removals with before→after arrows).</li>
-        <li><strong>Google Sheets integration:</strong> toggle embeds the live sheet as a full-height iframe inside the bill view.</li>
-        <li>Attachments organised in stages: MB Slips, Client Bill, Invoice Receiving. Locked once Admin Accepted.</li>
-        <li><strong>Generate Invoice dialog:</strong> Line Type (Short / Summary / Detailed), TDS logic, live preview.</li>
-        <li><strong>Spreadsheet Editor:</strong> Full in-browser spreadsheet with add/remove rows, drag-to-reorder, collapsible categories, undo/redo, copy/paste. 6-decimal internal precision with carry-forward, hold redistribution, opening-bill mode, and configurable pagination.</li>
+        <li>Backed securely by the organization's connected Google Drive.</li>
+        <li><strong>Mirrors the ERP hierarchy:</strong> Customers, Vendors, Projects, and RA Bills each get their own folder tree automatically maintained inside Drive.</li>
+        <li><strong>Auto-recovery triggers:</strong> If a folder is manually deleted in Drive, the next ERP write automatically recreates it.</li>
+        <li><strong>Important file lock:</strong> Files marked "important" cannot be deleted without an explicit secondary unlock.</li>
       </ul>
 
-      <h3>11. Purchase Module</h3>
+      <h4>5.7 Analytics &amp; 5.8 Finance</h4>
       <ul>
-        <li><strong>Dashboard:</strong> KPI cards (Total Vendors, This Month Purchases, Total Purchase Value, Pending Approvals).</li>
-        <li><strong>Vendors:</strong> search, bulk import CSV, inline add/edit, bank account verification for vendor payouts.</li>
-        <li><strong>Purchase Orders:</strong> Status filters, Create PO dialog (vendor, delivery location, PO date, line items), hover-reveal dropdown for row-level views.</li>
-        <li><strong>Purchase Bills (Transactions):</strong> Tabs for All / Pending / Sent Back. Advanced Filters panel. Split "New" button (Purchase Entry / Purchase Return / Purchase Rate Reduction). <strong>AI Extract button</strong> uploads an invoice PDF/image to pull vendor name, GSTIN, invoice number, date, line items, totals with confidence thresholds.</li>
-        <li><strong>Purchase Credit Notes:</strong> "New Credit Note" dropdown (Purchase Return or Rate Reduction), row click opens read-only Purchase Bill View. Admin approvals and Re-sync to Zoho.</li>
+        <li><strong>Analytics:</strong> Strictly Admin-only. Cross-module roll-ups pull from Inventory consumption, HRM payroll, and Sales billing to calculate accurate project profitability and cost-versus-budget.</li>
+        <li><strong>Finance &amp; Accounting:</strong> An admin-only bridge router that opens the connected company's Zoho Books in a new tab. No accounting UI is duplicated inside the ERP, the system defers entirely to Zoho as the system-of-record.</li>
       </ul>
 
-      <h3>12. Inventory &amp; Equipment</h3>
+      <h4>5.9 Administrator &amp; 5.10 SuperAdmin</h4>
       <ul>
-        <li><strong>Materials &amp; Items:</strong> Catalogue of raw materials with units, total quantity, and live valuation using average purchase cost.</li>
-        <li><strong>Machinery:</strong> Dedicated catalogue for equipment with location-specific availability.</li>
-        <li><strong>Locations:</strong> Multiple warehouses/sites. Project leads automatically generate an inventory location on conversion.</li>
-        <li><strong>Stock Transactions:</strong> Purchase In, Internal Transfer, Consumption, Scrapped, Lost/Damaged, Repair Sent, Repair Returned. Status workflow: Pending → Approved or Sent Back.</li>
-        <li><strong>Multi-stage transfer (RCN):</strong> Outpass → Dispatched → Delivered, forward-only progression. Adjustments allow physical-count reconciliation. Each movement captures user name, email, timestamp for audit.</li>
-        <li><strong>Reports &amp; Analytics:</strong> Stock by Location, Consumption Analysis, Purchase Analysis, Item Movement History. Auto-generated printable Transaction Slips.</li>
-      </ul>
-
-      <h3>13. Human Resource Management (HRM)</h3>
-      <ul>
-        <li><strong>Employee Records:</strong> Central list with real-time status. Detailed profiles (Aadhaar, EPF UAN, ESIC IP, bank details). Integrated document storage. Bulk updates for designations, salary rates.</li>
-        <li><strong>Onboarding &amp; Verification:</strong> Multi-step form with Aadhaar checksum validation. Aadhaar-linked bank account verification with match-score reporting. Bulk Excel onboarding.</li>
-        <li><strong>Attendance &amp; Payroll:</strong> Master monthly grid for daily attendance, overtime. Automated salary calculation using calendar days or configurable divisor. Multiple deduction types. Sentinel handling (-1 for cleared, 0 for explicit zero); debounced calculation. Highlighted Sunday rows for weekly advance entries.</li>
-        <li><strong>Payments:</strong> Separate workflows for Regular Monthly and Weekly Advances. Quick Pay rapid-payment interface (UPI/IFSC). Bank-ready bulk upload files in CSV, TXT, XLS with configurable column mapping for multiple banks.</li>
-        <li><strong>Salary Slips:</strong> Multilingual (English/Hindi). One-click PDF export rendered from a fixed off-screen 794px HTML canvas for layout fidelity.</li>
-        <li><strong>Masters:</strong> Designations, Projects master (linked to inventory customers), Settings (default salary divisor, Google Drive folder isolation).</li>
-      </ul>
-
-      <h3>14. Workspace (Drive-Backed Files)</h3>
-      <ul>
-        <li>A complete file system mirrored to Google Drive for the organisation. Folder hierarchy mirrors the ERP's own project/customer hierarchy.</li>
-        <li>Upload, Rename, Move, Copy, Delete. Star important files to protect them from accidental deletion.</li>
-        <li>Direct Google Drive URLs for external sharing, per-file descriptions, Recent Activity feed, and native spreadsheet creation. Dedicated "Company Documents" area.</li>
-      </ul>
-
-      <h3>15. Analytics &amp; 16. Finance (Admin-only)</h3>
-      <ul>
-        <li><strong>Project Analytics list:</strong> search, status filter, date range. Project Cost Cards grid with Revenue, Total Cost, Profit, Margin %. Drill-down detail page with revenue vs cost charts, line items, employee costs, and material costs per project.</li>
-        <li><strong>Finance &amp; Accounting:</strong> Bridge module taking admins directly to Zoho Books in a new tab.</li>
-      </ul>
-
-      <h3>17. Administrator Console</h3>
-      <ul>
-        <li><strong>Companies:</strong> multi-company support per organisation. Identity (GSTIN validation, auto-extracted PAN), Address, Logo/Signature upload, Bank details. Per-company Zoho Books connection (OAuth popup, status with last-synced timestamp).</li>
-        <li><strong>Users &amp; Divisions:</strong> invite by email, soft-deactivation rules, division grid with Active toggles.</li>
-        <li><strong>System Settings:</strong> Google Drive connection, TDS Settings (194C/194J/194H/194I, Zoho mappings), Invoice/Quotation Settings, RA Bill Google Sheet Template, AI Item Matching thresholds (auto-accept slider 50–95%), GST Rates master list.</li>
-        <li><strong>Notifications &amp; Security:</strong> Browser Push Notifications toggle with status-aware helper text (subscribed / default / denied / iframe-blocked). Session timeout, 2FA toggle.</li>
-        <li><strong>Activity Log:</strong> full-text search, Module/Action/User filters, Export CSV. Inline expandable Diff Viewer (insert, delete, update colour-coded). Specialised views for Attendance saves and RA Bill saves.</li>
-      </ul>
-
-      <h3>18. SuperAdmin Console</h3>
-      <ul>
-        <li><strong>Stats grid:</strong> Total Orgs, Active, Pending Approval, Disabled, Total Users.</li>
-        <li><strong>Organisations Tab:</strong> per-org card with logo, members, primary admin. Enter / Manage / Activate / Suspend / Disable / Re-enable.</li>
-        <li><strong>Platform Settings Tab:</strong> Allow New Registrations toggle, Allow Public Signups toggle.</li>
-        <li><strong>Branding Tab:</strong> App Identity, Auth Page Content, Support &amp; Footer, live preview, Save All.</li>
-        <li><strong>Pending Requests page:</strong> Approve dialog (module checkboxes pre-filled) and Reject dialog (optional reason). Request History table.</li>
-        <li><strong>Override Mode banner:</strong> amber pill top-right with org name + Exit button.</li>
+        <li><strong>Administrator:</strong> Manage org users, pre-invites, soft-deletes, email changes, companies, signatures, seals, bank details, and all numbering series with default T&amp;Cs.</li>
+        <li><strong>SuperAdmin:</strong> Platform-level control. Approves, disables, or deletes tenant organizations. Toggles specific modules per organization, manages public sign-ups, views platform-wide analytics, and manages the global auth screen branding.</li>
       </ul>
     </section>
 
-    <section id="cross-cutting">
+    <!-- 03 Feature Deep Dives -->
+    <section id="deep-dives">
       <div class="section-eyebrow"><span class="eyebrow-num">03</span><span class="eyebrow-line"></span></div>
-      <h2>Part III — Cross-Cutting Capabilities</h2>
+      <h2>Feature Deep Dives</h2>
+
+      <h3>6.1 RA Bill Engine (Running Account Bills)</h3>
+      <p>Running Account Bills are the absolute heart of construction billing. Each RA bill represents the cumulative quantity executed on each line item up to a given date, with the new bill's value being the exact difference against the previous bill.</p>
       
       <div class="feature-grid">
-        <div class="feature-card">
-          <div class="fc-title">19. AI Smart Search &amp; Chat</div>
-          <p class="fc-desc">⌘K / Ctrl+K global shortcut. Natural-language queries return grouped results by module. Floating AI Chat Assistant with markdown, auto-scroll, and context. Gemini-powered Document Extraction for purchase invoices with admin-configurable confidence thresholds.</p>
-        </div>
-        <div class="feature-card">
-          <div class="fc-title">20. Notifications</div>
-          <p class="fc-desc">Bell icon with unread count. Desktop popover or mobile slide-in sheet. Browser Push Notifications with full status flow. Real-time updates via live subscription with a 60s fallback polling safety net.</p>
-        </div>
-        <div class="feature-card">
-          <div class="fc-title">21. Activity &amp; Audit Logging</div>
-          <p class="fc-desc">Every insert, update, delete is logged with timestamp, user, action, module, changed fields, before/after values, and IP address. Auth events recorded. Specialised diff viewers for Attendance and RA Bills.</p>
-        </div>
-        <div class="feature-card">
-          <div class="fc-title">22. Numbering &amp; Verifications</div>
-          <p class="fc-desc">Automatic document numbering (zero-padded) with cache invalidation to prevent race conditions. GSTIN live verification (PAN extraction). Aadhaar checksum verification and bank account verification. Bulk CSV/Excel imports.</p>
-        </div>
-        <div class="feature-card">
-          <div class="fc-title">23. Theming &amp; Accessibility</div>
-          <p class="fc-desc">Light / Dark / System theme. Alternating high-density table rows in dark mode. Indian number format (₹, en-IN) with auto-scaling to Lakhs/Crores. Navigation safety: forms intercept browser back/forward with "Stay / Leave" confirmation.</p>
-        </div>
-        <div class="feature-card">
-          <div class="fc-title">24. Access Gating</div>
-          <p class="fc-desc">Direct navigation to restricted modules shows "Access Not Enabled" with module label and reason (module-not-enabled vs admin-only). Module tiles render disabled on the Home screen.</p>
-        </div>
+        <div class="feature-card"><div class="fc-title">Opening RA Baseline</div><p class="fc-desc">Projects can declare an "RA0" baseline representing work already executed before the system was adopted. Subsequent RA1, RA2 carry this forward automatically.</p></div>
+        <div class="feature-card"><div class="fc-title">line_identifier Matching</div><p class="fc-desc">Each line carries a stable identifier so that quantities flow correctly across versions even if text descriptions are later edited.</p></div>
+        <div class="feature-card"><div class="fc-title">6-Decimal Precision</div><p class="fc-desc">Quantities are stored with 6 decimals; UI rounding happens only at render time, eliminating the classic ₹0.01 mismatch between bill totals and sum of lines.</p></div>
+        <div class="feature-card"><div class="fc-title">Hold Redistribution</div><p class="fc-desc">When a hold (retention) is added or removed, the engine redistributes the value pro-rata across the affected lines, validating that the sum exactly reconciles.</p></div>
+        <div class="feature-card"><div class="fc-title">Carry-Forward Sync</div><p class="fc-desc">Editing a previous RA bill triggers a controlled recompute of all subsequent bills.</p></div>
+        <div class="feature-card"><div class="fc-title">Spreadsheet-like UX</div><p class="fc-desc">Cells accept formulas, support drag-fill, and use O(1) hash maps for instant lookups across thousands of rows.</p></div>
       </div>
-    </section>
+      <p><strong>Export Capabilities:</strong> RA Bills support nested attachments (like drawings or photos) that travel with the bill into PDF exports. PDFs utilize Arial-only typography for crisp printing, with configurable display filters. Furthermore, a bill can be cloned directly into a Google Sheet via the Sheets API, preserving the exact ERP layout.</p>
 
-    <section id="data-isolation">
-      <div class="section-eyebrow"><span class="eyebrow-num">04</span><span class="eyebrow-line"></span></div>
-      <h2>Part IV — Data Isolation &amp; Security</h2>
-      
-      <div class="callout">
-        <span class="callout-icon">🛡️</span>
-        <div>Every record is scoped to the organisation that owns it; no cross-tenant access is possible. Inside an organisation, division scoping further restricts access to records belonging to divisions the user is a member of.</div>
-      </div>
-
+      <h3>6.2 HRM Payroll Engine</h3>
       <ul>
-        <li><strong>Untagged records:</strong> Division-less records are visible only to administrators and SuperAdmin. Admins and SuperAdmin inherently bypass all division scoping.</li>
-        <li><strong>Restricted modules:</strong> Administrator, Finance, and Analytics modules can only be granted to Admins.</li>
-        <li><strong>Immutability:</strong> Profile fields like SuperAdmin status, organisation membership, and active flag cannot be self-modified — only the appropriate authority can change them.</li>
-        <li><strong>Server-side Validation:</strong> All sensitive fields and document numbers are write-validated server-side regardless of UI state.</li>
-        <li><strong>Audit Integrity:</strong> Audit identity is preserved perfectly even after a user is deactivated.</li>
-        <li><strong>Document Security:</strong> Per-organisation storage isolation for sensitive HR documents (photo, Aadhaar, bank proof). Zoho and Google Drive credentials are encrypted per organisation, per company.</li>
+        <li><strong>Recursive balance walk:</strong> Rolling balances (advance, deduction, pending dues) are computed by an explicit loop walking from the employee's first-ever entry forward, ensuring a stable result independent of grid order.</li>
+        <li><strong>-1 sentinel:</strong> The grid distinguishes three states: a real value, a manually-entered zero, and a "deleted" cell. The sentinel <code>-1</code> represents deletion so downstream aggregations can ignore it without losing audit history.</li>
+        <li><strong>Debounced calculations &amp; 2-decimal constraints:</strong> Cell edits trigger debounced recomputes to avoid lag on fast typists, while money columns strictly enforce 2 decimals at the database schema level.</li>
+        <li><strong>Sunday weekly cycle:</strong> Submissions are gated to Sundays, ensuring uniform week boundaries across projects.</li>
+        <li><strong>Slip PDF generation:</strong> Slips are rendered into a fixed-width 794px off-screen HTML node and then captured to canvas, producing pixel-perfect A4 PDFs irrespective of the user's viewport.</li>
+      </ul>
+
+      <h3>6.3 Inventory Transfers</h3>
+      <p>A three-stage transfer workflow ensures physical material movements are reflected accurately in stock without double-counting:</p>
+      
+      <div class="flow">
+        <div class="flow-step"><div class="flow-dot">📋</div><div class="flow-label">CREATED</div></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><div class="flow-dot">📤</div><div class="flow-label">OUTPASS</div></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><div class="flow-dot">🚚</div><div class="flow-label">DISPATCHED</div></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><div class="flow-dot">✅</div><div class="flow-label">DELIVERED</div></div>
+      </div>
+      <ul>
+        <li>A <strong>SECURITY DEFINER RPC</strong> enforces the strict progression rule so clients cannot revert a transfer backwards, even with crafted API requests.</li>
+        <li>Stock movements are committed <em>only</em> on <strong>DELIVERED</strong>, completely eliminating the common "lost-in-transit" double-counting problem.</li>
+        <li>Permissions are strictly tier-checked: managers can advance stages, but only admins can hard-cancel a delivered transfer.</li>
+      </ul>
+
+      <h3>6.4 Customer, Invoice &amp; Quotation Systems</h3>
+      <ul>
+        <li><strong>Identity &amp; Address Model:</strong> <code>Trade Name</code> is the legal name printed on invoices, while <code>display_name</code> is a unique short nickname used internally. Billing and shipping addresses are first-class entities; project addresses inherit automatically.</li>
+        <li><strong>Billing Company Lock:</strong> Once a customer's first approved document is issued from a particular company, that pairing is securely locked to prevent accidental cross-entity invoicing.</li>
+        <li><strong>Quotation Settings:</strong> Features General T&amp;C applied by default, Special T&amp;C appended per quote, configurable Signature blocks, and Default units resolved directly from the item master.</li>
       </ul>
     </section>
 
+    <!-- 04 Integrations -->
+    <section id="integrations">
+      <div class="section-eyebrow"><span class="eyebrow-num">04</span><span class="eyebrow-line"></span></div>
+      <h2>Deep Integrations</h2>
+      
+      <div class="callout">
+        <span class="callout-icon">🔗</span>
+        <div>The ERP treats external systems not as competitors, but as specialized engines. Zoho acts as the ledger, Drive acts as the file cabinet, and the AI Gateway processes unstructured text.</div>
+      </div>
+
+      <h4>7.1 Zoho Books</h4>
+      <p>The ERP treats Zoho Books as the final accounting system-of-record. The integration features:</p>
+      <ul>
+        <li><strong>OAuth:</strong> Per-company OAuth grant with refresh-token rotation handled by edge functions.</li>
+        <li><strong>Identity matching:</strong> Customers and vendors are intelligently matched by GSTIN and display name.</li>
+        <li><strong>Tax Mappings:</strong> Items are tax-classified by HSN, and a dedicated TDS settings card maintains live mapping between local TDS codes and Zoho withholding tax IDs.</li>
+        <li><strong>Sync Surface:</strong> Fully covers <code>sync-invoice</code>, <code>creditnote</code>, <code>customer</code>, <code>vendor</code>, <code>purchase-bill</code>, <code>purchase-creditnote</code>, and <code>ra-invoice</code>. Sync is strictly restricted to GST-registered counterparties by design. Each entity explicitly displays its Zoho sync metadata (like last synced time, Zoho doc ID, and status).</li>
+      </ul>
+
+      <h4>7.2 Google Drive (Workspace)</h4>
+      <ul>
+        <li><strong>Security:</strong> AES-256-GCM encryption of OAuth tokens at rest, utilizing an In-Production consent screen.</li>
+        <li><strong>Mirrored hierarchy:</strong> The ERP automatically creates and maintains a Drive folder tree that perfectly mirrors Customers, Vendors, Projects, and RA Bills.</li>
+        <li><strong>Auto-recovery:</strong> If a mirrored folder is deleted directly in Google Drive, the next ERP write transparently recreates it. Cross-org access is mathematically impossible due to strict per-org token isolation.</li>
+      </ul>
+
+      <h4>7.3 AI Gateway &amp; 7.4 GSTIN</h4>
+      <ul>
+        <li><strong>Managed AI:</strong> A single managed AI gateway powers Smart Search (⌘K) for natural-language routing, a context-aware floating Chat Assistant, a Document Summarizer, and automated Purchase Image Extraction.</li>
+        <li><strong>GSTIN Verification:</strong> Edge functions actively validate entered GSTINs against the official Indian government registry, returning the precise legal name, address, and registration status during customer/vendor onboarding.</li>
+      </ul>
+    </section>
+
+    <!-- 05 UI, UX & Realtime -->
+    <section id="ui-ux">
+      <div class="section-eyebrow"><span class="eyebrow-num">05</span><span class="eyebrow-line"></span></div>
+      <h2>UI, UX &amp; Realtime Notifications</h2>
+      
+      <ul>
+        <li><strong>Visual Language:</strong> Zoho Books-inspired minimalism featuring generous whitespace in light mode, and high-density alternating rows (<code>#111827</code> / <code>#1a2332</code>) in dark mode. Theme toggle covers Light, Dark, and System states.</li>
+        <li><strong>Color Discipline:</strong> Amber is reserved <em>exclusively</em> for warnings and pending statuses.</li>
+        <li><strong>Unified Navigation:</strong> A top-3 floating sidebar toggle and a unified header that consolidates AI search, theme, notification bell, and the Superadmin context banner.</li>
+        <li><strong>Dialog Pattern:</strong> All modals follow a strict <code>max-h-[90vh] overflow-hidden flex-col</code> shell with a flexible scrolling body, guaranteeing native scrolling behavior even for massive forms. Responsive table wrappers gracefully fall back to horizontal scrolling without sacrificing column widths on mobile.</li>
+        <li><strong>Notifications &amp; Transport:</strong> The Notification Bell surfaces server-side filtered alerts via Supabase Realtime <code>postgres_changes</code>, backed by a robust 60-second fallback poll ensuring zero missed alerts during mobile network handoffs.</li>
+      </ul>
+    </section>
+
+    <!-- 06 Operations -->
+    <section id="operations">
+      <div class="section-eyebrow"><span class="eyebrow-num">06</span><span class="eyebrow-line"></span></div>
+      <h2>Operational Capabilities</h2>
+      <div class="feature-grid">
+        <div class="feature-card"><div class="fc-title">Bulk Imports &amp; Exports</div><p class="fc-desc">HRM employee bulk upload via Excel with precise row-level validation. Full export pipelines to CSV, Excel, and PDF for materials, machinery, stock, RA bills, and reports.</p></div>
+        <div class="feature-card"><div class="fc-title">Document Numbering</div><p class="fc-desc">Sequential, company-specific counters for every document type, featuring explicit database cache invalidation to prevent multi-client collisions.</p></div>
+        <div class="feature-card"><div class="fc-title">Navigation Blocker</div><p class="fc-desc">Active forms actively intercept browser history navigation (back/forward/refresh) to prevent devastating accidental data loss during long data entry sessions.</p></div>
+        <div class="feature-card"><div class="fc-title">Soft-Delete &amp; Audit</div><p class="fc-desc">Users and master records support non-destructive soft-delete with restoration. Every inventory movement is permanently timestamped with the acting user's Identity.</p></div>
+      </div>
+    </section>
+
+    <!-- 07 Data Isolation & Security -->
+    <section id="data-isolation">
+      <div class="section-eyebrow"><span class="eyebrow-num">07</span><span class="eyebrow-line"></span></div>
+      <h2>Data Isolation &amp; Security</h2>
+      <p>Security is a top priority here. The architecture strongly enforces boundaries so data never leaks between tenants or unauthorized users.</p>
+      <ul>
+        <li><strong>Strict Tenant Scoping:</strong> Every record is scoped to the organization that owns it, so cross-tenant access is completely impossible at the database level[cite: 1].</li>
+        <li><strong>Division-Level Isolation:</strong> Inside a single organization, division scoping further restricts access to records belonging only to the divisions the user is assigned to[cite: 1].</li>
+        <li><strong>Untagged Records:</strong> Untagged (division-less) records are strictly visible only to administrators and SuperAdmin users[cite: 1].</li>
+        <li><strong>Admin-Bypass:</strong> Admins and the SuperAdmin naturally bypass division scoping constraints to oversee the entire organization[cite: 1].</li>
+        <li><strong>Role-Restricted Modules:</strong> Highly sensitive modules like Administrator, Finance, and Analytics can only be granted to admin roles[cite: 1].</li>
+        <li><strong>Immutable Security Profiles:</strong> Profile fields like SuperAdmin status, organization membership, and active flags cannot be self-modified by users, only the appropriate authority can alter them[cite: 1].</li>
+        <li><strong>Persistent Audit Identities:</strong> A user's audit identity is fully preserved across all logs even after their account is deactivated[cite: 1].</li>
+        <li><strong>Server-Side Validations:</strong> All sensitive fields and critical document numbers are strongly write-validated server-side, regardless of any frontend UI state[cite: 1].</li>
+        <li><strong>Isolated Storage:</strong> Per-organization storage isolation ensures sensitive HR documents like photos, ID proofs, and bank details remain securely segregated[cite: 1]. Zoho and Google Drive credentials are encrypted individually per organization and per company[cite: 1].</li>
+      </ul>
+    </section>
+
+    <!-- 08 Access Gating -->
+    <section id="access-gating">
+      <div class="section-eyebrow"><span class="eyebrow-num">08</span><span class="eyebrow-line"></span></div>
+      <h2>Access Gating &amp; Error Handling</h2>
+      <p>We designed the system to handle access barriers gracefully, providing clear context to users instead of generic crashes.</p>
+      <ul>
+        <li><strong>Friendly Denials:</strong> Direct navigation to a restricted module immediately shows a clean <strong>"Access Not Enabled"</strong> card displaying the module label, the specific reason (module-not-enabled versus admin-only), and intuitive 'Go Back' or 'Back to Home' buttons[cite: 1].</li>
+        <li><strong>Disabled Home States:</strong> Module tiles render safely disabled on the ERP Home screen with a "Not Enabled" badge for any unavailable modules[cite: 1].</li>
+        <li><strong>Dialog Consistency:</strong> Consistent dialog patterns (90vh max height, scrollable body) are used everywhere, alongside explicit confirmation alert dialogs for every single destructive action[cite: 1]. Active forms intercept accidental browser navigation prompts to actively prevent user data loss[cite: 1].</li>
+      </ul>
+    </section>
+
+    <!-- 09 Glossary -->
+    <section id="glossary">
+      <div class="section-eyebrow"><span class="eyebrow-num">09</span><span class="eyebrow-line"></span></div>
+      <h2>Glossary of Terms</h2>
+      
+      <p>Here are a few common terms you will see in the system:</p>
+
+      <p>An <strong>RA Bill</strong> is a Running Account Bill. This is basically a cumulative project bill we issue periodically to detail all the work done up to a certain date.</p>
+
+      <p>When you see <strong>RCN</strong>, it stands for Reconciliation transaction. It unifies consumption and transfer into one definitive event.</p>
+
+      <p><strong>HSN</strong> stands for Harmonized System of Nomenclature, which is just the international tax classification code for physical goods.</p>
+
+      <p><strong>TDS</strong> is Tax Deducted at Source, which is the standard Indian withholding tax mechanism.</p>
+
+      <p>For taxes, <strong>IGST</strong> is the Integrated GST applied specifically on inter-state supplies. On the other hand, <strong>CGST and SGST</strong> are the Central and State GST applied on intra-state supplies.</p>
+
+      <p><strong>GSTIN</strong> simply stands for Goods and Services Tax Identification Number.</p>
+
+      <p>An <strong>Outpass</strong> is the first physical stage of an inventory transfer. It just indicates that the material has actually left the source location.</p>
+
+      <p><strong>Override Mode</strong> is a powerful session for the Superadmin that securely operates inside a specific tenant organization's isolated sandbox.</p>
+
+      <p>Finally, a <strong>Shadow Item</strong> is a non-billable line that we carry safely on an invoice purely for internal record-keeping. It does not affect the final tax totals.</p>
+    </section>
+
+    <div class="closing-quote">
+      <p>I built this platform focusing on strict tenant isolation, a clean and consistent UX, and deep integrations that actually add accounting value. Because of this, the ERP can easily scale from a small single-company contractor to a massive multi-entity construction group without changing any frontend code. And most importantly, one tenant's data is never accessible to another.</p>
+    </div>
   </article>
 </div>
 
@@ -421,6 +484,8 @@
   function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('active'); }
   const sections = document.querySelectorAll('section[id]');
   const links = document.querySelectorAll('.toc a');
+  
+  // Set up intersection observer for TOC highlights
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -430,6 +495,7 @@
       }
     });
   }, { rootMargin: '-20% 0px -70% 0px' });
+  
   sections.forEach(s => observer.observe(s));
 </script>
 
