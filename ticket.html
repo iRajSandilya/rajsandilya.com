@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)file:///Users/rajsandilya/Downloads/demo-ticket.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Ticket Component</title>
+<style>
+  :root{
+    --blue:#1a5fd0;
+    --blue-dark:#1550b8;
+    --ink:#1a1a1a;
+    --muted:#5a5a5a;
+    --line:#e2e2e2;
+    --preview-bg:#2b2f33;
+    --amber:#f5a623;
+    --red:#ff3b30;
+    --green-edge:#c8e6c9;
+    --note-bg:#fbe9e9;
+    --note-ink:#b23b3b;
+    --page:#eef0f2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--page);
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+    min-height:100dvh;
+  }
+  .phone{
+    width:100%;
+    max-width:430px;
+    background:#fff;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* ---- Top blue header ---- */
+  .header{
+    background:var(--blue);
+    color:#fff;
+    padding:20px 20px 22px;
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+    position:sticky;
+    top:0;
+    z-index:5;
+  }
+  .back{
+    width:38px;height:38px;flex:none;
+    border:1.5px solid rgba(255,255,255,.85);
+    border-radius:50%;
+    display:grid;place-items:center;
+    background:transparent;color:#fff;cursor:pointer;
+    font-size:18px;
+  }
+  .header h1{font-size:22px;font-weight:700;line-height:1.1;}
+  .header .mobile{font-size:13px;opacity:.9;margin-top:3px;font-weight:400;}
+
+  .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+
+  .thanks{
+    padding:16px 20px 4px;
+    font-size:14px;color:var(--muted);
+  }
+
+  /* ---- Ticket card ---- */
+  .card{
+    margin:12px 16px 0;
+    border-radius:8px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(0,0,0,.06);
+  }
+  .card-edge{height:8px;background:var(--green-edge);}
+
+  /* preview / countdown block */
+  .preview{
+    background:var(--preview-bg);
+    color:#fff;
+    padding:18px 16px 22px;
+    text-align:center;
+    position:relative;
+    display:flex;
+    align-items:center;
+  }
+  .rail-label{
+    writing-mode:vertical-rl;
+    transform:rotate(180deg);
+    font-size:12px;letter-spacing:2px;font-weight:600;
+    opacity:.85;flex:none;
+  }
+  .rail-label.hi{transform:none;}
+  .preview-mid{flex:1;padding:0 6px;}
+  .preview-title{font-size:17px;font-weight:700;margin-bottom:2px;}
+  .countdown{
+    font-size:46px;font-weight:800;color:var(--red);
+    letter-spacing:1px;line-height:1.1;
+    font-variant-numeric:tabular-nums;
+  }
+  .book-dt{font-size:13px;margin-top:10px;opacity:.9;}
+  .book-time{color:var(--amber);font-size:21px;font-weight:700;margin-top:2px;}
+  .rid{font-size:13px;margin-top:8px;opacity:.85;}
+  .nontrans{font-size:14px;margin-top:2px;font-weight:500;}
+  .dash-v{
+    border-left:1.5px dashed rgba(255,255,255,.4);
+    align-self:stretch;margin:0 2px;
+  }
+
+  /* white body of ticket */
+  .tbody{background:#fff;padding:18px 18px 20px;}
+  .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;}
+  .row + .row{margin-top:16px;}
+  .jt{font-size:19px;font-weight:600;}
+  .pnr{font-size:18px;font-weight:700;letter-spacing:.5px;}
+  .station{font-size:19px;font-weight:600;max-width:48%;}
+  .station.r{text-align:right;}
+  .dist{font-size:13px;color:var(--muted);align-self:center;}
+  .lbl{font-size:15px;color:var(--muted);}
+  .val{font-size:16px;font-weight:600;}
+  .val.r{text-align:right;}
+  hr.soft{border:none;border-top:1px solid var(--line);margin:16px 0;}
+  .fare{font-size:16px;font-weight:600;color:var(--ink);}
+  .irline{font-size:15px;color:var(--ink);margin-top:4px;letter-spacing:.3px;}
+
+  .valid-note{
+    background:#fff;padding:0 18px 16px;
+    font-size:12.5px;color:var(--muted);line-height:1.5;
+  }
+  .card-edge.bottom{background:var(--green-edge);}
+
+  .disclaimer{
+    background:var(--note-bg);
+    color:var(--note-ink);
+    text-align:center;
+    font-size:13px;line-height:1.5;
+    padding:14px 24px;
+    margin:0;
+  }
+
+  /* QR block */
+  .qr-wrap{
+    text-align:center;padding:26px 20px 10px;
+  }
+  #qr{
+    width:230px;height:230px;margin:0 auto;
+    display:block;image-rendering:pixelated;
+  }
+  .qr-cap{font-size:12px;color:var(--muted);margin-top:10px;}
+  .book-connect{
+    display:block;width:calc(100% - 40px);margin:8px 20px 22px;
+    padding:14px;border:1px solid var(--blue);border-radius:26px;
+    background:#fff;color:var(--blue);font-size:15px;font-weight:600;
+    cursor:pointer;
+  }
+
+  .know{padding:6px 20px 40px;}
+  .know h3{font-size:16px;font-weight:700;margin-bottom:10px;}
+  .know p{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:10px;}
+
+  /* DEMO watermark — makes it unmistakably not a real ticket */
+  .watermark{
+    position:absolute;inset:0;pointer-events:none;z-index:20;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+  }
+  .watermark span{
+    font-size:64px;font-weight:800;letter-spacing:8px;
+    color:rgba(120,120,120,.14);
+    transform:rotate(-32deg);white-space:nowrap;
+    position:absolute;
+  }
+  .watermark span:nth-child(1){top:22%;}
+  .watermark span:nth-child(2){top:52%;}
+  .watermark span:nth-child(3){top:82%;}
+
+  .demo-banner{
+    background:#111;color:#fff;text-align:center;
+    font-size:12px;letter-spacing:1px;padding:7px;font-weight:600;
+  }
+</style>
+</head>
+<body>
+  <div class="phone">
+    
+
+    <div class="header">
+      <button class="back" aria-label="Back">←</button>
+      <div>
+        <h1>Booking Details</h1>
+        <div class="mobile">Mobile: 6263061400</div>
+      </div>
+    </div>
+
+    <div class="scroll">
+      <div class="watermark">
+        
+      </div>
+
+      <p class="thanks">Thank You AKSHAT KUMAR TRIPATHI, Happy Journey!</p>
+
+      <div class="card">
+        <div class="card-edge"></div>
+
+        <div class="preview">
+          <div class="rail-label">INDIAN RAILWAYS</div>
+          <div class="dash-v"></div>
+          <div class="preview-mid">
+            <div class="preview-title">Dynamic preview will close in</div>
+            <div class="countdown" id="countdown" style="opacity: 0.5;">00:00</div>
+            <div class="book-dt">Ticket Booking Date &amp; Time</div>
+            <div class="book-time">22 Jul 2026, 02:14</div>
+            <div class="rid">R13903</div>
+            <div class="nontrans">Ticket is Non-Transferable</div>
+          </div>
+          <div class="dash-v"></div>
+          <div class="rail-label hi">भारतीय रेल</div>
+        </div>
+
+        <div class="tbody">
+          <div class="row">
+            <span class="jt">Journey Ticket</span>
+            <span class="pnr">XYG0EEU004</span>
+          </div>
+          <div class="row">
+            <span class="station">NAGPUR</span>
+            <span class="dist">—1090 km—</span>
+            <span class="station r">HAZRAT NIZAMUDDIN JN</span>
+          </div>
+          <div class="row">
+            <span><span class="lbl">Via</span><br><span class="val">------</span></span>
+            <span class="r"><span class="lbl">Passenger</span><br><span class="val r">2 Adult, 0 Child</span></span>
+          </div>
+          <div class="row">
+            <span><span class="lbl">Booked on</span><br><span class="val">22/07/2026 02:14</span></span>
+            <span class="r"><span class="lbl">*Valid Till</span><br><span class="val r">22/07/2026 23:59</span></span>
+          </div>
+          <hr class="soft">
+          <div class="fare">SECOND | SUPERFAST | JOURNEY | ₹680.00</div>
+          <div class="irline">IR:27AAAGM0289C2ZI</div>
+        </div>
+
+        <div class="valid-note">
+          *Valid for start of journey by 22/07/2026 of until departure of first train.
+        </div>
+        <div class="card-edge bottom"></div>
+      </div>
+
+      <p class="disclaimer">
+        Note: This ticket is non refundable. Ticket is stored locally on the device. Please do not change your handset or perform factory reset.
+      </p>
+
+      <div class="qr-wrap">
+        <canvas id="qr" width="230" height="230"></canvas>
+        
+      </div>
+
+      <button class="book-connect">Book Connecting Journey</button>
+
+      <div class="know">
+        <h3>Do you know?</h3>
+        <p>IR recovers only 57% of cost of travel on an average.</p>
+        <p>This ticket is booked on a personal user ID. It's sale/purchase is an offence u/s 143 of the Railways Act, 1989</p>
+<p>For enquiry and integrated railway helpline. please dial 139.</p>
+      </div>
+    </div>
+  </div>
+
+<script src="./ticket_files/qrcode.min.js"></script>
+<script>
+/* ---------- Countdown (the "liveness" mechanic, on a demo clock) ---------- */
+(function(){
+  var total = 5 * 60;              // 5:00 demo window
+  var el = document.getElementById('countdown');
+  function tick(){
+    var m = Math.floor(total/60), s = total%60;
+    el.textContent = (m<10?'0':'')+m + ':' + (s<10?'0':'')+s;
+    if(total<=0){ el.textContent='00:00'; el.style.opacity='.5'; return; }
+    total--; setTimeout(tick,1000);
+  }
+  tick();
+})();
+
+/* ---------- QR generation (client-side, harmless payload) ---------- */
+(function(){
+  var canvas = document.getElementById('qr');
+  var payload = 'DEMO-TICKET-COMPONENT | not-a-real-ticket';
+  // qrcodejs renders into a container div; build one, then copy to canvas
+  var tmp = document.createElement('div');
+  new QRCode(tmp, { text: payload, width:230, height:230,
+                    correctLevel: QRCode.CorrectLevel.M });
+  var img = tmp.querySelector('img') || tmp.querySelector('canvas');
+  var ctx = canvas.getContext('2d');
+  function draw(src){
+    var i = new Image();
+    i.onload=function(){ ctx.clearRect(0,0,230,230); ctx.drawImage(i,0,0,230,230); };
+    i.src = src;
+  }
+  if(img && img.tagName==='IMG'){
+    if(img.complete && img.src) draw(img.src);
+    else img.onload=function(){ draw(img.src); };
+  } else if(img){ // canvas
+    ctx.drawImage(img,0,0,230,230);
+  }
+})();
+</script>
+
+
+</body></html>
