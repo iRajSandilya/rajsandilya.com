@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Sentry — Face Enrolment & Liveness</title>
+
+<style>
+  /* ============================================================
+     DESIGN TOKENS
+     A "night operations" instrument aesthetic: dark stage so the
+     video and the reticle read clearly, one confident teal signal,
+     amber + red reserved strictly for machine STATE (verifying /
+     alert). Mono is used only for live telemetry — real instrument
+     readings, not decoration.
+     ============================================================ */
+  :root {
+    --bg:        #0c1016;
+    --panel:     #151b24;
+    --panel-2:   #1b232f;
+    --line:      #29323f;
+    --line-soft: #1f2733;
+    --ink:       #e8eef5;
+    --muted:     #8a97a6;
+    --faint:     #5c6775;
+    --signal:    #35e0c1;  /* live / verified / match          */
+    --warn:      #f4b740;  /* verifying / blink needed          */
+    --alert:     #ff5f6d;  /* no match / no person / error      */
+    --radius:    14px;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  /* A class-based `display: flex` (on .placeholder / .banner) outranks the
+     browser's [hidden]{display:none}. Force hidden to always win so toggling
+     el.hidden actually shows/hides these overlays. */
+  [hidden] { display: none !important; }
+
+  html, body { margin: 0; }
+  body {
+    background:
+      radial-gradient(1200px 700px at 78% -8%, #14202e 0%, transparent 55%),
+      var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+    padding: clamp(14px, 3vw, 30px);
+  }
+
+  .app { max-width: 1120px; margin: 0 auto; }
+
+  /* ---- Top bar ---- */
+  .bar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .wordmark { display: flex; align-items: baseline; gap: 10px; }
+  .wordmark b {
+    font-size: 20px; font-weight: 700; letter-spacing: -0.03em;
+  }
+  .wordmark b .dot { color: var(--signal); }
+  .wordmark span { color: var(--faint); font-size: 12.5px; }
+
+  /* Segmented mode control */
+  .modes {
+    display: inline-flex; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 999px; padding: 4px;
+  }
+  .modes button {
+    appearance: none; border: 0; background: transparent; color: var(--muted);
+    font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+    padding: 8px 18px; border-radius: 999px; transition: color .15s, background .15s;
+  }
+  .modes button[aria-pressed="true"] { background: var(--panel-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+  .modes button:disabled { opacity: .45; cursor: not-allowed; }
+
+  /* ---- Layout ---- */
+  .grid {
+    display: grid; gap: 18px;
+    grid-template-columns: minmax(0, 1.45fr) minmax(290px, 1fr);
+    align-items: start;
+  }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+
+  /* ---- Stage (camera + overlay) ---- */
+  .stage {
+    position: relative; background: #05070a; border-radius: var(--radius);
+    overflow: hidden; border: 1px solid var(--line); aspect-ratio: 4 / 3;
+  }
+  video, canvas.overlay {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    display: block; object-fit: cover;
+  }
+  /* Mirror ONLY the video for a natural selfie feel. The canvas is NOT
+     mirrored (so text labels stay readable); box x-coords are flipped in JS. */
+  video.mirror { transform: scaleX(-1); }
+  canvas.overlay { pointer-events: none; }
+
+  /* Viewfinder corner ticks — a structural cue drawn from the subject
+     (a camera targeting frame), not ornament. */
+  .reticle { position: absolute; inset: 12px; pointer-events: none; }
+  .reticle i {
+    position: absolute; width: 22px; height: 22px; border: 2px solid rgba(53,224,193,.55);
+  }
+  .reticle i:nth-child(1){ top:0; left:0; border-right:0; border-bottom:0; }
+  .reticle i:nth-child(2){ top:0; right:0; border-left:0; border-bottom:0; }
+  .reticle i:nth-child(3){ bottom:0; left:0; border-right:0; border-top:0; }
+  .reticle i:nth-child(4){ bottom:0; right:0; border-left:0; border-top:0; }
+
+  /* Status banner over the video */
+  .banner {
+    position: absolute; left: 12px; right: 12px; bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(8,11,16,.72); backdrop-filter: blur(8px);
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 13px; font-size: 14px; font-weight: 600;
+  }
+  .banner .led {
+    width: 9px; height: 9px; border-radius: 50%; background: var(--muted);
+    flex: none; box-shadow: 0 0 0 0 transparent;
+  }
+  .banner[data-state="scan"]  .led { background: var(--signal); animation: pulse 1.4s ease-out infinite; }
+  .banner[data-state="warn"]  .led { background: var(--warn); }
+  .banner[data-state="alert"] .led { background: var(--alert); }
+  .banner[data-state="ok"]    .led { background: var(--signal); }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(53,224,193,.5); }
+    100% { box-shadow: 0 0 0 9px rgba(53,224,193,0); }
+  }
+  @media (prefers-reduced-motion: reduce) { .banner .led { animation: none !important; } }
+
+  /* Empty-camera state */
+  .placeholder {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 14px; text-align: center;
+    color: var(--muted); padding: 24px;
+  }
+  .placeholder svg { opacity: .6; }
+
+  /* ---- Right panel ---- */
+  .panel {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 16px;
+  }
+  .panel + .panel { margin-top: 18px; }
+  .panel h2 {
+    margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--muted);
+    letter-spacing: .01em;
+  }
+
+  /* Telemetry read-outs */
+  .telemetry { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line-soft); border-radius: 10px; overflow: hidden; }
+  .cell { background: var(--panel-2); padding: 11px 12px; }
+  .cell .k { font-size: 11px; color: var(--faint); margin-bottom: 3px; }
+  .cell .v { font-family: var(--mono); font-size: 18px; font-weight: 500; letter-spacing: -.01em; }
+  .v.signal { color: var(--signal); } .v.warn { color: var(--warn); } .v.alert { color: var(--alert); } .v.dim { color: var(--faint); }
+
+  /* Enrolment form */
+  label.field { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 7px; }
+  input[type="text"] {
+    width: 100%; background: var(--panel-2); border: 1px solid var(--line);
+    color: var(--ink); font: inherit; font-size: 15px; padding: 11px 12px;
+    border-radius: 10px; outline: none; transition: border-color .15s;
+  }
+  input[type="text"]:focus { border-color: var(--signal); }
+  input::placeholder { color: var(--faint); }
+
+  .btn {
+    appearance: none; width: 100%; border: 0; cursor: pointer; font: inherit;
+    font-size: 15px; font-weight: 650; padding: 12px 14px; border-radius: 10px;
+    margin-top: 10px; transition: transform .05s, opacity .15s, background .15s;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn.primary { background: var(--signal); color: #06231d; }
+  .btn.ghost { background: var(--panel-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+
+  .hint { font-size: 12.5px; color: var(--faint); margin-top: 10px; }
+  .hint.ok  { color: var(--signal); }
+  .hint.err { color: var(--alert); }
+
+  /* Roster */
+  .roster { list-style: none; margin: 0; padding: 0; }
+  .roster li {
+    display: flex; align-items: center; gap: 10px; padding: 9px 0;
+    border-top: 1px solid var(--line-soft); font-size: 14.5px;
+  }
+  .roster li:first-child { border-top: 0; }
+  .roster .avatar {
+    width: 30px; height: 30px; border-radius: 8px; flex: none;
+    background: var(--panel-2); display: grid; place-items: center;
+    color: var(--signal); font-weight: 700; font-size: 13px; box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .roster .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .roster .rm {
+    appearance: none; border: 0; background: transparent; color: var(--faint);
+    cursor: pointer; font: inherit; font-size: 13px; padding: 4px 6px; border-radius: 6px;
+  }
+  .roster .rm:hover { color: var(--alert); }
+  .empty { color: var(--faint); font-size: 13px; padding: 6px 0; }
+
+  .boot {
+    display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--muted);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 12px; margin-bottom: 18px;
+  }
+  .boot .led { width: 8px; height: 8px; border-radius: 50%; background: var(--warn); flex: none; animation: pulse 1.4s ease-out infinite; }
+  .boot.ready .led { background: var(--signal); animation: none; }
+  .boot.fail .led { background: var(--alert); animation: none; }
+
+  footer { color: var(--faint); font-size: 12px; margin-top: 22px; text-align: center; }
+  code { font-family: var(--mono); color: var(--muted); background: var(--panel); padding: 1px 5px; border-radius: 5px; font-size: .92em; }
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <div class="bar">
+    <div class="wordmark">
+      <b>Sentry<span class="dot">.</span></b>
+      <span>face enrolment &amp; liveness</span>
+    </div>
+    <div class="modes" role="group" aria-label="Mode">
+      <button id="modeEnroll"   aria-pressed="true"  disabled>Enrol</button>
+      <button id="modeIdentify" aria-pressed="false" disabled>Identify</button>
+    </div>
+  </div>
+
+  <!-- Model boot status -->
+  <div class="boot" id="boot"><span class="led"></span><span id="bootText">Loading detection models…</span></div>
+
+  <div class="grid">
+    <!-- ============ CAMERA STAGE ============ -->
+    <div class="stage" id="stage">
+      <video id="video" class="overlay mirror" autoplay muted playsinline></video>
+      <canvas id="overlay" class="overlay"></canvas>
+      <div class="reticle"><i></i><i></i><i></i><i></i></div>
+
+      <!-- Shown before the camera starts -->
+      <div class="placeholder" id="placeholder">
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+        <div>Camera is off. Start it to enrol a face or run identification.</div>
+        <button class="btn primary" id="startCam" style="max-width:220px" disabled>Start camera</button>
+      </div>
+
+      <!-- Live status banner -->
+      <div class="banner" id="banner" data-state="idle" hidden>
+        <span class="led"></span><span id="bannerText">Ready</span>
+      </div>
+    </div>
+
+    <!-- ============ SIDE PANEL ============ -->
+    <div>
+      <!-- Telemetry only meaningful in Identify mode -->
+      <div class="panel" id="telemetryPanel" hidden>
+        <h2>Live telemetry</h2>
+        <div class="telemetry">
+          <div class="cell"><div class="k">Eye aspect ratio</div><div class="v" id="tEar">—</div></div>
+          <div class="cell"><div class="k">Blinks detected</div><div class="v" id="tBlinks">0</div></div>
+          <div class="cell"><div class="k">Liveness</div><div class="v dim" id="tLive">standby</div></div>
+          <div class="cell"><div class="k">Match distance</div><div class="v" id="tDist">—</div></div>
+          <div class="cell"><div class="k">Faces in frame</div><div class="v" id="tFaces">0</div></div>
+          <div class="cell"><div class="k">Detect rate</div><div class="v dim" id="tFps">— fps</div></div>
+        </div>
+        <div class="hint">Hold still and blink once. Identity stays hidden until a live blink is confirmed.</div>
+      </div>
+
+      <!-- Enrolment -->
+      <div class="panel" id="enrolPanel">
+        <h2>Enrol a face</h2>
+        <label class="field" for="nameInput">Person's name</label>
+        <input type="text" id="nameInput" placeholder="e.g. Raj Sandilya" autocomplete="off" />
+        <button class="btn primary" id="registerBtn" disabled>Register this face</button>
+        <div class="hint" id="enrolHint">Start the camera, centre one face, then register.</div>
+      </div>
+
+      <!-- Roster -->
+      <div class="panel">
+        <h2>Enrolled people</h2>
+        <ul class="roster" id="roster"></ul>
+        <div class="empty" id="rosterEmpty">No one enrolled yet.</div>
+        <button class="btn ghost" id="clearBtn" style="margin-top:14px" hidden>Clear all</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Runs fully in your browser · nothing is uploaded. Descriptors are stored in this browser's local storage.
+  </footer>
+</div>
+
+<script type="module">
+/* ==================================================================
+   Sentry — real-time face recognition with blink-based liveness
+   ------------------------------------------------------------------
+   Library : @vladmandic/face-api (ESM build — bundles TensorFlow.js)
+   Models  : tinyFaceDetector  → locates faces (fast, mobile-friendly)
+             faceLandmark68Net → 68 landmarks → drives EAR / blink
+             faceRecognitionNet → 128-D descriptor for identity
+   NOTE: the 128-D descriptor REQUIRES faceRecognitionNet. The detector
+   and landmark nets alone cannot produce it, so all three are loaded.
+   ================================================================== */
+
+import * as faceapi from 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/dist/face-api.esm.js';
+
+/* ---- Verified, resolvable CDN paths ---- */
+const MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights';
+
+/* ---- Tunables (all thresholds in one place) ---- */
+const CFG = {
+  INPUT_SIZE:        320,   // tinyFaceDetector input; smaller = faster on phones
+  SCORE_THRESHOLD:   0.5,   // min detector confidence
+  MATCH_THRESHOLD:   0.6,   // Euclidean distance ceiling for a positive ID
+  CLOSE_FRACTION:    0.85,  // eyes "closed" when EAR falls below 85% of the learned open baseline
+  OPEN_FRACTION:     0.93,  // eyes "reopened" when EAR recovers above 93% (hysteresis gap)
+  REQUIRED_BLINKS:   1,     // distinct live blinks before identity is revealed
+  LIVENESS_MS:       60,    // fast landmark-ONLY sampling (~16fps) so quick blinks aren't missed
+  IDENTIFY_MS:       130,   // full pipeline (with 128-D descriptors) runs only AFTER liveness passes
+  ENROL_MS:          400,   // slower presence check while enrolling (saves battery)
+  LIVENESS_RESET_MS: 1500,  // if the subject leaves frame this long, liveness resets
+  MIRROR:            true   // mirror the preview like a real mirror
+};
+
+/* ---- DOM ---- */
+const $ = id => document.getElementById(id);
+const video = $('video'), overlay = $('overlay'), ctx = overlay.getContext('2d');
+const boot = $('boot'), bootText = $('bootText');
+const placeholder = $('placeholder'), startCam = $('startCam');
+const banner = $('banner'), bannerText = $('bannerText');
+const modeEnrolBtn = $('modeEnroll'), modeIdentifyBtn = $('modeIdentify');
+const telemetryPanel = $('telemetryPanel'), enrolPanel = $('enrolPanel');
+const nameInput = $('nameInput'), registerBtn = $('registerBtn'), enrolHint = $('enrolHint');
+const roster = $('roster'), rosterEmpty = $('rosterEmpty'), clearBtn = $('clearBtn');
+const tEar = $('tEar'), tBlinks = $('tBlinks'), tLive = $('tLive'), tDist = $('tDist'), tFaces = $('tFaces'), tFps = $('tFps');
+
+/* ---- Runtime state ---- */
+const STORAGE_KEY = 'sentry.faces.v1';
+let labeledDescriptors = [];   // [{ name, descriptor: Float32Array(128) }]
+let mode = 'enrol';            // 'enrol' | 'identify'
+let modelsReady = false, streaming = false, busy = false;
+let lastRun = 0, lastFaceSeen = 0;
+let fpsEMA = 0, lastFrameTs = 0;
+
+/* Liveness / blink tracking (applies to the primary = largest face) */
+let eyesClosed = false, blinkCount = 0, livenessConfirmed = false;
+
+/* =========================================================
+   1) LOAD MODELS
+   ========================================================= */
+async function init() {
+  try {
+    // Ensure a TF.js backend is ready (WebGL on most devices, incl. mobile)
+    await faceapi.tf.ready();
+    await Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+      faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+      faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+    ]);
+    modelsReady = true;
+    boot.classList.add('ready');
+    bootText.textContent = `Models ready · ${faceapi.tf.getBackend()} backend`;
+    startCam.disabled = false;
+    modeEnrolBtn.disabled = false;
+    modeIdentifyBtn.disabled = false;
+  } catch (err) {
+    boot.classList.add('fail');
+    bootText.textContent = 'Could not load models. Check your connection and reload.';
+    console.error(err);
+  }
+}
+
+/* =========================================================
+   2) CAMERA
+   ========================================================= */
+async function startCamera() {
+  // getUserMedia needs a secure context (https or localhost). Opening the
+  // file directly (file://) is blocked in Chrome — surface that clearly.
+  if (!navigator.mediaDevices?.getUserMedia) {
+    return camError('Camera API unavailable. Serve this over http://localhost or https.');
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+      audio: false
+    });
+    video.srcObject = stream;
+    await video.play();
+    streaming = true;
+    placeholder.hidden = true;
+    banner.hidden = false;
+    syncCanvas();
+    loop();
+  } catch (err) {
+    const msg = err.name === 'NotAllowedError'
+      ? 'Camera permission denied. Allow it in the address bar and reload.'
+      : 'No camera available, or it is in use by another app.';
+    camError(msg);
+    console.error(err);
+  }
+}
+function camError(msg) {
+  placeholder.innerHTML = `<div class="hint err" style="max-width:280px">${msg}</div>`;
+}
+
+/* Keep the overlay canvas pixel-for-pixel with the DISPLAYED video box.
+   Recomputed on load + whenever the element resizes (rotation, layout). */
+function syncCanvas() {
+  const w = video.clientWidth, h = video.clientHeight;
+  if (w && h && (overlay.width !== w || overlay.height !== h)) {
+    overlay.width = w; overlay.height = h;
+  }
+}
+new ResizeObserver(syncCanvas).observe(video);
+
+/* =========================================================
+   3) EYE ASPECT RATIO (EAR)  →  BLINK DETECTION
+   ---------------------------------------------------------
+   EAR (Soukupová & Čech, 2016) measures how open an eye is from
+   6 landmark points arranged around it:
+
+           p2   p3
+        p1         p4      EAR = (‖p2-p6‖ + ‖p3-p5‖) / (2·‖p1-p4‖)
+           p6   p5
+
+   Numerator = the two vertical eyelid gaps; denominator = the horizontal
+   eye width, which normalises for distance and face size. Open eye ≈ 0.3;
+   a blink dips it toward ~0.1.
+
+   Why not a fixed threshold? tinyFaceDetector's landmarks are coarser than
+   a hard 0.22 assumes — a genuine blink often only reaches ~0.24 — and eye
+   size varies with distance. So we LEARN each person's open baseline live:
+   `earBaseline` tracks the open-eye value and only ever rises (toward the
+   most-open reading), so a blink can't drag it down. A blink is counted
+   when EAR falls below CLOSE_FRACTION of the baseline (eyes shut) and then
+   recovers above OPEN_FRACTION (eyes reopened). That closed→open swing
+   needs a live face; a still photo holds EAR flat and never triggers it.
+   The gap between the fractions is the hysteresis that stops one blink
+   from registering several times.
+   ========================================================= */
+function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+
+function eyeAspectRatio(eye) {           // eye = 6 ordered landmark points
+  const vertical = dist(eye[1], eye[5]) + dist(eye[2], eye[4]);
+  const horizontal = 2 * dist(eye[0], eye[3]);
+  return vertical / horizontal;
+}
+
+let earBaseline = null;                  // learned "eyes-open" EAR (rises only)
+function updateBlink(ear) {
+  // Grow the open-eye baseline quickly toward larger (more-open) readings.
+  if (earBaseline === null) earBaseline = ear;
+  else if (ear > earBaseline) earBaseline = earBaseline * 0.6 + ear * 0.4;
+
+  const closeThresh = earBaseline * CFG.CLOSE_FRACTION;
+  const openThresh  = earBaseline * CFG.OPEN_FRACTION;
+
+  if (!eyesClosed && ear < closeThresh) {
+    eyesClosed = true;                                   // eyes just went down
+  } else if (eyesClosed && ear > openThresh) {
+    eyesClosed = false;
+    blinkCount++;                                        // ...and came back up → 1 blink
+    if (blinkCount >= CFG.REQUIRED_BLINKS) livenessConfirmed = true;
+  }
+}
+
+// Fresh liveness challenge: called on mode switch and when the face is lost.
+function resetLiveness() {
+  blinkCount = 0; livenessConfirmed = false; eyesClosed = false; earBaseline = null;
+}
+
+/* =========================================================
+   4) DESCRIPTOR COMPARISON
+   ---------------------------------------------------------
+   Every face is encoded by faceRecognitionNet as a 128-number vector
+   (a "descriptor"). Faces of the SAME person land close together in
+   this 128-D space; different people land far apart. We compare a live
+   descriptor to each enrolled one with straight-line (Euclidean)
+   distance and keep the nearest. If that nearest distance is within
+   MATCH_THRESHOLD (0.6, the value the FaceNet-style model was tuned
+   around) we treat it as the same person; otherwise → "Unknown".
+   ========================================================= */
+function bestMatch(descriptor) {
+  let best = { name: 'Unknown', distance: Infinity };
+  for (const person of labeledDescriptors) {
+    const d = faceapi.euclideanDistance(descriptor, person.descriptor);
+    if (d < best.distance) best = { name: person.name, distance: d };
+  }
+  const matched = best.distance <= CFG.MATCH_THRESHOLD;
+  return { name: matched ? best.name : 'Unknown', distance: best.distance, matched };
+}
+
+/* =========================================================
+   5) DETECTION LOOP  (requestAnimationFrame + throttle)
+   ---------------------------------------------------------
+   One rAF loop serves both modes. We only run the (expensive) neural
+   inference every IDENTIFY_MS / ENROL_MS, and guard with `busy` so a
+   slow frame never overlaps the next — this keeps phones cool.
+   ========================================================= */
+function loop() {
+  if (!streaming) return;
+  requestAnimationFrame(loop);
+
+  const now = performance.now();
+  // Fast sampling while waiting for a blink; throttle once we're identifying.
+  const interval = mode === 'enrol'     ? CFG.ENROL_MS
+                 : livenessConfirmed     ? CFG.IDENTIFY_MS
+                 :                          CFG.LIVENESS_MS;
+  if (busy || now - lastRun < interval) return;
+  lastRun = now;
+
+  busy = true;
+  (mode === 'identify' ? runIdentify() : runEnrolPreview())
+    .catch(console.error)
+    .finally(() => { busy = false; });
+}
+
+const detectorOpts = () =>
+  new faceapi.TinyFaceDetectorOptions({ inputSize: CFG.INPUT_SIZE, scoreThreshold: CFG.SCORE_THRESHOLD });
+
+/* Flip a box's x for the mirrored preview so drawings sit on the right
+   side of the face. (Canvas isn't mirrored, so text stays readable.) */
+function mapX(x, w) { return CFG.MIRROR ? overlay.width - x - w : x; }
+
+/* ---------- ENROL MODE: light presence check + guide box ---------- */
+async function runEnrolPreview() {
+  const det = await faceapi.detectSingleFace(video, detectorOpts()).withFaceLandmarks();
+  syncCanvas();
+  ctx.clearRect(0, 0, overlay.width, overlay.height);
+
+  if (!det) {
+    registerBtn.disabled = true;
+    setBanner('warn', 'No person detected');
+    return;
+  }
+  const r = faceapi.resizeResults(det, { width: overlay.width, height: overlay.height });
+  drawFaceBox(r.detection.box, getComputedStyle(document.documentElement).getPropertyValue('--signal'), null);
+  registerBtn.disabled = false;
+  setBanner('scan', 'Face ready — enter a name and register');
+}
+
+/* ---------- IDENTIFY MODE ----------
+   Phase 1 (not yet live): cheap LANDMARKS-ONLY detection sampled fast, so a
+   quick blink is actually caught. Phase 2 (live): full pipeline w/ descriptors. */
+async function runIdentify() {
+  return livenessConfirmed ? runRecognition() : runLiveness();
+}
+
+/* Phase 1 — fast, NO descriptors. Just EAR + blink on the primary face. */
+async function runLiveness() {
+  const det = await faceapi.detectSingleFace(video, detectorOpts()).withFaceLandmarks();
+  syncCanvas();
+  ctx.clearRect(0, 0, overlay.width, overlay.height);
+  updateFps();
+
+  if (!det) {
+    if (performance.now() - lastFaceSeen > CFG.LIVENESS_RESET_MS) resetLiveness();
+    tFaces.textContent = 0;
+    tEar.textContent = '—'; tEar.className = 'v dim';
+    tDist.textContent = '—'; tDist.className = 'v dim';
+    paintLiveness();
+    setBanner('alert', 'No person detected');
+    return;
+  }
+  lastFaceSeen = performance.now();
+  tFaces.textContent = 1;
+
+  const ear = (eyeAspectRatio(det.landmarks.getLeftEye()) +
+               eyeAspectRatio(det.landmarks.getRightEye())) / 2;
+  updateBlink(ear);                                    // may flip livenessConfirmed
+  tEar.textContent = ear.toFixed(3);
+  tEar.className = 'v ' + (eyesClosed ? 'warn' : 'signal');
+  tDist.textContent = '—'; tDist.className = 'v dim';
+  paintLiveness();
+
+  const r = faceapi.resizeResults(det, { width: overlay.width, height: overlay.height });
+  const css = k => getComputedStyle(document.documentElement).getPropertyValue(k);
+  if (livenessConfirmed) {                             // just passed this very frame
+    drawFaceBox(r.detection.box, css('--signal'), 'Liveness confirmed');
+    setBanner('ok', 'Liveness confirmed — identifying…');
+  } else {
+    drawFaceBox(r.detection.box, css('--warn'), 'Blink to verify');
+    setBanner('warn', `Liveness check — blink once (${blinkCount}/${CFG.REQUIRED_BLINKS})`);
+  }
+}
+
+/* Phase 2 — full pipeline: ALL faces → landmarks → 128-D descriptors → labels. */
+async function runRecognition() {
+  const results = await faceapi
+    .detectAllFaces(video, detectorOpts())
+    .withFaceLandmarks()
+    .withFaceDescriptors();
+
+  syncCanvas();
+  ctx.clearRect(0, 0, overlay.width, overlay.height);
+  updateFps();
+  tFaces.textContent = results.length;
+
+  /* No face: reset liveness if the subject has been gone a while. */
+  if (results.length === 0) {
+    if (performance.now() - lastFaceSeen > CFG.LIVENESS_RESET_MS) resetLiveness();
+    setBanner('alert', 'No person detected');
+    tEar.textContent = '—'; tEar.className = 'v dim';
+    tDist.textContent = '—'; tDist.className = 'v dim';
+    paintLiveness();
+    return;
+  }
+  lastFaceSeen = performance.now();
+
+  /* Largest face drives the telemetry read-outs. */
+  const primary = results.reduce((a, b) =>
+    (a.detection.box.width * a.detection.box.height >
+     b.detection.box.width * b.detection.box.height ? a : b));
+  const ear = (eyeAspectRatio(primary.landmarks.getLeftEye()) +
+               eyeAspectRatio(primary.landmarks.getRightEye())) / 2;
+  tEar.textContent = ear.toFixed(3); tEar.className = 'v signal';
+  paintLiveness();
+
+  /* Draw every face with its identity (distance shown for matches). */
+  const resized = faceapi.resizeResults(results, { width: overlay.width, height: overlay.height });
+  const css = k => getComputedStyle(document.documentElement).getPropertyValue(k);
+  let primaryMatch = null;
+
+  resized.forEach((res, i) => {
+    const m = bestMatch(results[i].descriptor);
+    if (results[i] === primary) primaryMatch = m;      // remember the primary face's result
+    const color = m.matched ? css('--signal') : css('--alert');
+    const label = m.matched ? `${m.name} · ${m.distance.toFixed(2)}` : 'Unknown';
+    drawFaceBox(res.detection.box, color, label);
+  });
+
+  if (primaryMatch) {
+    tDist.textContent = primaryMatch.distance === Infinity ? '—' : primaryMatch.distance.toFixed(3);
+    tDist.className = 'v ' + (primaryMatch.matched ? 'signal' : 'alert');
+    setBanner(primaryMatch.matched ? 'ok' : 'alert',
+      primaryMatch.matched ? `Verified · ${primaryMatch.name}` : 'Unknown — no enrolled match');
+  }
+}
+
+function paintLiveness() {
+  if (livenessConfirmed)      { tLive.textContent = 'confirmed'; tLive.className = 'v signal'; }
+  else if (blinkCount > 0)    { tLive.textContent = 'partial';   tLive.className = 'v warn'; }
+  else                        { tLive.textContent = 'standby';   tLive.className = 'v dim'; }
+  tBlinks.textContent = blinkCount;
+}
+
+function updateFps() {
+  const now = performance.now();
+  if (lastFrameTs) {
+    const inst = 1000 / (now - lastFrameTs);
+    fpsEMA = fpsEMA ? fpsEMA * 0.8 + inst * 0.2 : inst;   // smoothed
+    tFps.textContent = `${fpsEMA.toFixed(1)} fps`;
+  }
+  lastFrameTs = now;
+}
+
+/* ---- Reticle-style bounding box + label (drawn in display coords) ---- */
+function drawFaceBox(box, color, label) {
+  const x = mapX(box.x, box.width), y = box.y, w = box.width, h = box.height;
+  color = color.trim();
+
+  // faint full frame
+  ctx.strokeStyle = color; ctx.globalAlpha = 0.35; ctx.lineWidth = 1.5;
+  ctx.strokeRect(x, y, w, h);
+
+  // solid corner brackets (viewfinder look)
+  ctx.globalAlpha = 1; ctx.lineWidth = 3;
+  const c = Math.min(22, w * 0.28);
+  ctx.beginPath();
+  ctx.moveTo(x, y + c);       ctx.lineTo(x, y);       ctx.lineTo(x + c, y);
+  ctx.moveTo(x + w - c, y);   ctx.lineTo(x + w, y);   ctx.lineTo(x + w, y + c);
+  ctx.moveTo(x + w, y + h - c); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w - c, y + h);
+  ctx.moveTo(x + c, y + h);   ctx.lineTo(x, y + h);   ctx.lineTo(x, y + h - c);
+  ctx.stroke();
+
+  if (!label) return;
+  ctx.font = '650 14px ' + getComputedStyle(document.body).fontFamily;
+  const padX = 8, tw = ctx.measureText(label).width + padX * 2, th = 22;
+  const ly = y - th - 6 < 0 ? y + h + 6 : y - th - 6;    // flip below if near top
+  ctx.fillStyle = 'rgba(8,11,16,0.82)';
+  roundRect(x, ly, tw, th, 6); ctx.fill();
+  ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.globalAlpha = 0.9;
+  roundRect(x, ly, tw, th, 6); ctx.stroke();
+  ctx.globalAlpha = 1; ctx.fillStyle = color;
+  ctx.textBaseline = 'middle'; ctx.fillText(label, x + padX, ly + th / 2 + 1);
+}
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function setBanner(state, text) { banner.dataset.state = state; bannerText.textContent = text; }
+
+/* =========================================================
+   6) REGISTRATION
+   ========================================================= */
+registerBtn.addEventListener('click', async () => {
+  const name = nameInput.value.trim();
+  if (!name) return showEnrol('Enter a name first.', 'err');
+  if (!streaming) return showEnrol('Start the camera first.', 'err');
+
+  registerBtn.disabled = true;
+  showEnrol('Capturing…', '');
+
+  // Single-shot full pipeline to obtain this person's 128-D descriptor.
+  const det = await faceapi
+    .detectSingleFace(video, detectorOpts())
+    .withFaceLandmarks()
+    .withFaceDescriptor();
+
+  if (!det) { registerBtn.disabled = false; return showEnrol('No face found — centre your face and retry.', 'err'); }
+
+  labeledDescriptors.push({ name, descriptor: det.descriptor });
+  persist();
+  renderRoster();
+  nameInput.value = '';
+  showEnrol(`Registered ${name}.`, 'ok');
+  registerBtn.disabled = false;
+});
+
+function showEnrol(msg, kind) { enrolHint.textContent = msg; enrolHint.className = 'hint' + (kind ? ' ' + kind : ''); }
+
+/* =========================================================
+   7) PERSISTENCE (LocalStorage)
+   Float32Array can't be JSON'd directly → store as plain arrays,
+   and rehydrate back into Float32Array on load for the distance math.
+   ========================================================= */
+function persist() {
+  const data = labeledDescriptors.map(p => ({ name: p.name, descriptor: Array.from(p.descriptor) }));
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) { console.warn('Storage full', e); }
+}
+function restore() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    labeledDescriptors = JSON.parse(raw).map(p => ({ name: p.name, descriptor: new Float32Array(p.descriptor) }));
+  } catch (e) { console.warn('Could not read storage', e); }
+}
+
+/* =========================================================
+   8) ROSTER UI
+   ========================================================= */
+function renderRoster() {
+  roster.innerHTML = '';
+  rosterEmpty.hidden = labeledDescriptors.length > 0;
+  clearBtn.hidden = labeledDescriptors.length === 0;
+  labeledDescriptors.forEach((p, i) => {
+    const li = document.createElement('li');
+    const initials = p.name.trim().split(/\s+/).map(s => s[0]).slice(0, 2).join('').toUpperCase();
+    li.innerHTML = `<span class="avatar">${initials || '?'}</span><span class="name"></span><button class="rm" data-i="${i}">Remove</button>`;
+    li.querySelector('.name').textContent = p.name;
+    roster.appendChild(li);
+  });
+}
+roster.addEventListener('click', e => {
+  const b = e.target.closest('.rm'); if (!b) return;
+  labeledDescriptors.splice(+b.dataset.i, 1); persist(); renderRoster();
+});
+clearBtn.addEventListener('click', () => {
+  if (!confirm('Remove all enrolled faces?')) return;
+  labeledDescriptors = []; persist(); renderRoster();
+});
+
+/* =========================================================
+   9) MODE SWITCHING
+   ========================================================= */
+function setMode(next) {
+  mode = next;
+  const identifying = next === 'identify';
+  modeEnrolBtn.setAttribute('aria-pressed', String(!identifying));
+  modeIdentifyBtn.setAttribute('aria-pressed', String(identifying));
+  telemetryPanel.hidden = !identifying;
+  enrolPanel.hidden = identifying;
+
+  // Each time we enter Identify, force a fresh liveness challenge.
+  resetLiveness();
+  paintLiveness();
+  if (streaming) setBanner(identifying ? 'warn' : 'scan',
+    identifying ? 'Liveness check — blink once' : 'Enrol mode');
+  ctx.clearRect(0, 0, overlay.width, overlay.height);
+}
+modeEnrolBtn.addEventListener('click', () => setMode('enrol'));
+modeIdentifyBtn.addEventListener('click', () => setMode('identify'));
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+startCam.addEventListener('click', startCamera);
+if (CFG.MIRROR) video.classList.add('mirror'); else video.classList.remove('mirror');
+restore();
+renderRoster();
+init();
+</script>
+</body>
+</html>
