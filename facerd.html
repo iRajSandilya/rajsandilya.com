@@ -722,6 +722,16 @@ registerBtn.addEventListener('click', async () => {
 
   if (!det) { registerBtn.disabled = false; return showEnrol('No face found — centre your face and retry.', 'err'); }
 
+  // --- Block duplicates: refuse a face that's already enrolled ---
+  // Reuse the identity comparison — if the captured descriptor lands within
+  // MATCH_THRESHOLD of anyone on file, it's the same person, so don't add it
+  // again. (Same 0.6 threshold as identification; lower it to be stricter.)
+  const dup = bestMatch(det.descriptor);
+  if (dup.matched) {
+    registerBtn.disabled = false;
+    return showEnrol(`This face is already enrolled as ${dup.name} (distance ${dup.distance.toFixed(2)}). Not added.`, 'err');
+  }
+
   labeledDescriptors.push({ name, descriptor: det.descriptor });
   persist();
   renderRoster();
